@@ -3,934 +3,653 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MuraliSeva - Bansuri & Pranayama Practice</title>
+    <title>MuraliSeva - Your Sacred Journey with Krishna's Flute</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #FFFFF8;
-            color: #333333;
-            text-align: center;
-        }
-        
-        h1 {
-            color: #FF8C00;
-            margin-bottom: 10px;
-        }
-        
-        h2 {
-            color: #666;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 10px;
-        }
-        
-        .status-box {
-            background: #F5F5F5;
-            border: 2px solid #CCCCCC;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-        
-        .button {
-            background-color: #FF8C00;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 10px 5px;
-        }
-        
-        .button:disabled {
-            background-color: #CCCCCC;
-            cursor: not-allowed;
-        }
-        
-        .button.secondary {
-            background-color: #666;
-            font-size: 14px;
-            padding: 8px 15px;
-        }
-        
-        /* Note selection buttons */
-        .note-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-        
-        .note-button {
-            background-color: #F5F5F5;
-            color: #333333;
-            border: 2px solid #CCCCCC;
-            padding: 15px 25px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .note-button.active {
-            background-color: #FF8C00;
-            color: white;
-            border-color: #FF8C00;
-        }
-        
-        /* Musical staff display */
-        .staff-container {
-            background: white;
-            border: 2px solid #CCCCCC;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-            height: 120px;
-            position: relative;
-        }
-        
-        /* Pitch indicator */
-        .pitch-indicator {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            transition: all 0.1s ease;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .pitch-correct {
-            background-color: #4CAF50;
-            color: white;
-        }
-        
-        .pitch-close {
-            background-color: #FFEB3B;
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+            min-height: 100vh;
             color: #333;
+            overflow-x: hidden;
         }
         
-        .pitch-wrong {
-            background-color: #F44336;
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #FF8C00, #FFB74D);
             color: white;
-        }
-        
-        /* Duration progress bar */
-        .duration-container {
-            background: #F5F5F5;
-            border: 2px solid #CCCCCC;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
-        }
-        
-        .duration-bar {
-            width: 100%;
-            height: 30px;
-            background-color: #E0E0E0;
-            border-radius: 15px;
-            overflow: hidden;
-            margin: 10px 0;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             position: relative;
         }
         
-        .duration-fill {
-            height: 100%;
-            background-color: #4CAF50;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-        
-        .duration-segments {
+        .header::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="20">🎵</text></svg>') repeat;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
         }
         
-        .segment {
-            flex: 1;
-            border-right: 2px solid #CCCCCC;
+        @keyframes float {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100px); }
         }
         
-        .segment:last-child {
-            border-right: none;
+        .main-title {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            position: relative;
         }
         
-        /* Breath Analysis Section */
-        .breath-analysis {
-            background: #E8F5E9;
-            border: 2px solid #4CAF50;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
+        .main-subtitle {
+            font-size: 20px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            position: relative;
         }
         
-        .breath-metrics {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 15px 0;
+        .tagline {
+            font-size: 16px;
+            font-style: italic;
+            opacity: 0.8;
+            position: relative;
         }
         
-        .metric-box {
+        /* Welcome Section */
+        .welcome-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .welcome-card {
             background: white;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .metric-label {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        
-        .metric-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-        }
-        
-        .metric-indicator {
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        
-        .good { color: #4CAF50; }
-        .medium { color: #FF9800; }
-        .poor { color: #F44336; }
-        
-        /* Breath visualization */
-        .breath-viz {
-            background: white;
-            border: 2px solid #CCCCCC;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-            height: 100px;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             position: relative;
             overflow: hidden;
         }
         
-        .breath-wave {
+        .welcome-card::before {
+            content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, rgba(76, 175, 80, 0.3), transparent);
-            transform-origin: bottom;
-            transition: transform 0.1s ease;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,140,0,0.1), transparent);
+            animation: shine 3s infinite;
         }
         
-        /* Fingering chart */
-        .fingering-display {
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .welcome-title {
+            font-size: 32px;
+            color: #FF8C00;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .welcome-text {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #666;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        /* Journey Grid */
+        .journey-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 20px;
+        }
+        
+        .journey-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .journey-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .journey-card.lesson-available {
+            border: 3px solid #4CAF50;
+        }
+        
+        .journey-card.lesson-current {
+            border: 3px solid #FF8C00;
+            animation: glow 2s infinite alternate;
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 5px 20px rgba(255,140,0,0.3); }
+            100% { box-shadow: 0 5px 30px rgba(255,140,0,0.6); }
+        }
+        
+        .journey-card.lesson-locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .journey-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .journey-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .journey-description {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .journey-progress {
             background: #F5F5F5;
-            border: 2px solid #CCCCCC;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
         }
         
-        .holes-container {
+        .journey-badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .journey-badge.current {
+            background: #FF8C00;
+        }
+        
+        .journey-badge.locked {
+            background: #999;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 20px;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .quick-actions-title {
+            font-size: 24px;
+            color: #1565C0;
+            margin-bottom: 20px;
+        }
+        
+        .action-buttons {
             display: flex;
             justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        /* Buttons */
+        .btn {
+            background: #FF8C00;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
             gap: 10px;
-            margin: 10px 0;
+            font-weight: 500;
+            box-shadow: 0 3px 10px rgba(255, 140, 0, 0.3);
         }
         
-        .hole {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 2px solid #333;
+        .btn:hover {
+            background: #FF7700;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
         }
         
-        .hole-closed {
-            background-color: #333;
+        .btn-secondary {
+            background: #2196F3;
+            box-shadow: 0 3px 10px rgba(33, 150, 243, 0.3);
         }
         
-        .hole-open {
-            background-color: white;
+        .btn-secondary:hover {
+            background: #1976D2;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
         }
         
-        .frequency-display {
-            font-size: 18px;
-            color: #666;
-            margin: 10px 0;
+        .btn-success {
+            background: #4CAF50;
+            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
         }
         
-        .error {
-            color: #F44336;
-            margin: 20px 0;
+        .btn-success:hover {
+            background: #45A049;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
         }
         
-        .success-message {
-            color: #4CAF50;
-            font-size: 20px;
-            font-weight: bold;
-            margin: 10px 0;
+        .btn-practice {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
         }
         
-        .mode-indicator {
-            background: #E3F2FD;
-            border: 2px solid #2196F3;
-            border-radius: 8px;
-            padding: 10px;
-            margin: 10px 0;
-            font-weight: bold;
-            color: #1976D2;
+        .btn-practice:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6a4190);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
         
-        .history-item {
+        /* Progress Overview */
+        .progress-overview {
             background: white;
-            border: 1px solid #CCCCCC;
-            border-radius: 8px;
-            padding: 10px;
-            margin: 5px 0;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .progress-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .progress-bars {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .progress-item {
+            background: #F5F5F5;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .progress-label {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background: #E0E0E0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease;
+        }
+        
+        .musical-progress { background: linear-gradient(90deg, #4CAF50, #8BC34A); }
+        .prana-progress { background: linear-gradient(90deg, #2196F3, #03A9F4); }
+        .bhakti-progress { background: linear-gradient(90deg, #FF6B6B, #FF8E53); }
+        
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .footer-quote {
+            font-size: 18px;
+            font-style: italic;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        
+        .footer-attribution {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 36px;
+            }
+            
+            .journey-grid {
+                grid-template-columns: 1fr;
+                padding: 0 10px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎵 MuraliSeva 🎵</h1>
-        <h2>Bansuri & Pranayama Practice</h2>
-        
-        <div class="status-box">
-            <h3>Target Note Information</h3>
-            <p id="targetInfo">Practice: Sa (370-405 Hz)</p>
-            <button class="button" onclick="playReferenceNote()">🔊 Play Reference Tone</button>
+    <!-- Header -->
+    <div class="header">
+        <h1 class="main-title">🎵 MuraliSeva 🎵</h1>
+        <p class="main-subtitle">Sacred Bansuri Practice with Krishna's Blessings</p>
+        <p class="tagline">"Every breath through the sacred bansuri is both a health practice AND an offering to Krishna"</p>
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <div class="welcome-card">
+            <h2 class="welcome-title">Namaste, Devotee! 🙏</h2>
+            <p class="welcome-text">
+                Welcome to MuraliSeva - where ancient devotion meets modern wellness. Join thousands of devotees worldwide who are discovering the divine through Krishna's sacred flute, the bansuri.
+                <br><br>
+                Guided by the wisdom of Pandit Hari Prasad Chaurasia ji and validated by neuroscience, this is your journey to master breath, music, and bhakti in perfect harmony.
+            </p>
         </div>
-        
-        <button id="startButton" class="button" onclick="startMicrophone()">
-            Start Practice
-        </button>
-        
-        <button id="stopButton" class="button" onclick="stopMicrophone()" disabled>
-            Stop Practice
-        </button>
-        
-        <button class="button secondary" onclick="resetProgress()">
-            Reset Progress
-        </button>
-        
-        <button class="button secondary" onclick="toggleBreathAnalysis()">
-            Toggle Breath Analysis
-        </button>
-        
-        <!-- Mode indicator -->
-        <div class="mode-indicator">
-            🎯 Pranayama Mode: Tracking breath quality & stability
+    </div>
+
+    <!-- Journey Grid -->
+    <div class="journey-grid">
+        <!-- Lesson 1 -->
+        <div class="journey-card lesson-current" onclick="startLesson(1)">
+            <div class="journey-icon">👶</div>
+            <h3 class="journey-title">Lesson 1: Krishna's First Breath</h3>
+            <p class="journey-description">
+                Begin your sacred journey by learning the fundamental note Sa, just as baby Krishna took His first divine breath in Gokul.
+            </p>
+            <div class="journey-progress">
+                <strong>Learn:</strong> Sa note, Basic breathing, Sacred connection
+            </div>
+            <span class="journey-badge current">🎯 Start Here</span>
         </div>
-        
-        <!-- Note Selection -->
-        <div class="note-buttons">
-            <button class="note-button active" onclick="selectNote('Sa', 370, 405, [1,1,1,1,1,1])">Sa</button>
-            <button class="note-button" onclick="selectNote('Re', 420, 450, [1,1,1,1,1,0])">Re</button>
-            <button class="note-button" onclick="selectNote('Ga', 470, 505, [1,1,1,1,0,0])">Ga</button>
-            <button class="note-button" onclick="selectNote('Ma', 500, 535, [1,1,1,0,0,0])">Ma</button>
+
+        <!-- Lesson 2 -->
+        <div class="journey-card lesson-locked">
+            <div class="journey-icon">😊</div>
+            <h3 class="journey-title">Lesson 2: Krishna's Second Smile</h3>
+            <p class="journey-description">
+                Discover the note Re and learn to play your first melody as Krishna's smile brings joy to Mother Yashoda.
+            </p>
+            <div class="journey-progress">
+                <strong>Learn:</strong> Re note, Sa-Re transitions, Longer breaths
+            </div>
+            <span class="journey-badge locked">🔒 Complete Lesson 1</span>
         </div>
-        
-        <!-- Musical Staff Display -->
-        <div class="staff-container">
-            <div id="pitchIndicator" class="pitch-indicator">🎵</div>
-            <div class="frequency-display" id="frequencyDisplay">Play a note...</div>
+
+        <!-- Free Practice -->
+        <div class="journey-card lesson-available" onclick="openPractice()">
+            <div class="journey-icon">🎯</div>
+            <h3 class="journey-title">Free Practice Mode</h3>
+            <p class="journey-description">
+                Practice any notes freely with real-time feedback. Perfect for warming up or exploring your musical expression.
+            </p>
+            <div class="journey-progress">
+                <strong>Features:</strong> All notes, Breath analysis, Progress tracking
+            </div>
+            <span class="journey-badge">⚡ Always Available</span>
         </div>
-        
-        <!-- Breath Analysis Section -->
-        <div id="breathAnalysis" class="breath-analysis">
-            <h3>🌬️ Breath Analysis</h3>
-            
-            <div class="breath-metrics">
-                <div class="metric-box">
-                    <div class="metric-label">Stability</div>
-                    <div class="metric-value" id="stabilityScore">--</div>
-                    <div class="metric-indicator" id="stabilityIndicator">Pitch steadiness</div>
+
+        <!-- Special Chapter -->
+        <div class="journey-card lesson-locked">
+            <div class="journey-icon">🌟</div>
+            <h3 class="journey-title">Tri-Swar Leela</h3>
+            <p class="journey-description">
+                Special advanced practice with Sa-Re-Ga combinations. Experience different rasas (emotions) through three sacred notes.
+            </p>
+            <div class="journey-progress">
+                <strong>Unlock:</strong> Complete first 3 lessons
+            </div>
+            <span class="journey-badge locked">✨ Special Chapter</span>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <h3 class="quick-actions-title">🚀 Quick Start Options</h3>
+        <div class="action-buttons">
+            <button class="btn btn-success" onclick="startLesson(1)">
+                <span>🎵</span> Begin Lesson 1
+            </button>
+            <button class="btn btn-practice" onclick="openPractice()">
+                <span>🎯</span> Free Practice
+            </button>
+            <button class="btn btn-secondary" onclick="showAbout()">
+                <span>ℹ️</span> About MuraliSeva
+            </button>
+        </div>
+    </div>
+
+    <!-- Progress Overview -->
+    <div class="progress-overview">
+        <h3 class="progress-title">🏆 Your Sacred Progress</h3>
+        <div class="progress-bars">
+            <div class="progress-item">
+                <div class="progress-label">
+                    <span>🎵 Musical Mastery</span>
+                    <span id="musicalScore">0 / 100</span>
                 </div>
-                
-                <div class="metric-box">
-                    <div class="metric-label">Smoothness</div>
-                    <div class="metric-value" id="smoothnessScore">--</div>
-                    <div class="metric-indicator" id="smoothnessIndicator">Volume consistency</div>
-                </div>
-                
-                <div class="metric-box">
-                    <div class="metric-label">Current Breath</div>
-                    <div class="metric-value" id="currentBreathLength">0.0s</div>
-                    <div class="metric-indicator">Length</div>
-                </div>
-                
-                <div class="metric-box">
-                    <div class="metric-label">Longest Breath</div>
-                    <div class="metric-value" id="longestBreath">0.0s</div>
-                    <div class="metric-indicator">Session best</div>
+                <div class="progress-bar">
+                    <div class="progress-fill musical-progress" id="musicalBar" style="width: 0%;"></div>
                 </div>
             </div>
             
-            <!-- Breath Visualization -->
-            <div class="breath-viz">
-                <div id="breathWave" class="breath-wave"></div>
-                <div style="position: absolute; top: 10px; left: 10px; color: #666; font-size: 14px;">
-                    Breath Flow Visualization
+            <div class="progress-item">
+                <div class="progress-label">
+                    <span>🌬️ Prana Shakti</span>
+                    <span id="pranaScore">0 / 100</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill prana-progress" id="pranaBar" style="width: 0%;"></div>
                 </div>
             </div>
             
-            <!-- Recent Breaths History -->
-            <h4>Recent Breaths</h4>
-            <div id="breathHistory">
-                <p style="color: #666;">Start playing to see breath history...</p>
-            </div>
-        </div>
-        
-        <!-- Duration Progress -->
-        <div class="duration-container">
-            <h4>Sustained Note Duration (Cumulative)</h4>
-            <div class="duration-bar">
-                <div id="durationFill" class="duration-fill"></div>
-                <div class="duration-segments">
-                    <div class="segment"></div>
-                    <div class="segment"></div>
-                    <div class="segment"></div>
-                    <div class="segment"></div>
-                    <div class="segment"></div>
+            <div class="progress-item">
+                <div class="progress-label">
+                    <span>🙏 Bhakti Score</span>
+                    <span id="bhaktiScore">0 / 100</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill bhakti-progress" id="bhaktiBar" style="width: 0%;"></div>
                 </div>
             </div>
-            <p id="durationText">Total held: 0.0s / 5.0s</p>
-            <p id="successMessage" class="success-message" style="display: none;">🎉 Excellent! You completed 5 seconds!</p>
         </div>
-        
-        <!-- Fingering Chart -->
-        <div class="fingering-display">
-            <h4>Fingering Chart</h4>
-            <div class="holes-container" id="fingeringChart">
-                <div class="hole hole-closed"></div>
-                <div class="hole hole-closed"></div>
-                <div class="hole hole-closed"></div>
-                <div class="hole hole-closed"></div>
-                <div class="hole hole-closed"></div>
-                <div class="hole hole-closed"></div>
-            </div>
-            <p>⬆️ Mouth side | Body side ⬇️</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-content">
+            <p class="footer-quote">
+                "The flute of Krishna generates transcendental sound vibration. That sound is Krishna."
+            </p>
+            <p class="footer-attribution">
+                🙏 Guided by the wisdom of Pandit Hari Prasad Chaurasia ji<br>
+                ⚕️ Validated by neuroscience • 💝 Created with devotion
+            </p>
         </div>
-        
-        <div id="errorMessage" class="error"></div>
     </div>
 
     <script>
-        let audioContext;
-        let microphone;
-        let analyser;
-        let dataArray;
-        let animationId;
-        let oscillator;
-        
-        // Current target note with frequency range
-        let currentNote = {
-            name: 'Sa',
-            minFreq: 370,
-            maxFreq: 405,
-            fingering: [1,1,1,1,1,1]
+        // User progress data
+        let userProgress = {
+            musical: 0,
+            prana: 0,
+            bhakti: 0,
+            completedLessons: [],
+            currentLesson: 1
         };
-        
-        // Duration tracking
-        let totalCorrectDuration = 0;
-        let lastCorrectTimestamp = null;
-        let targetDuration = 5000;
-        let hasCompletedTarget = false;
-        
-        // Breath analysis variables
-        let breathAnalysisEnabled = true;
-        let currentBreathStart = null;
-        let breathHistory = [];
-        let frequencyHistory = [];
-        let amplitudeHistory = [];
-        let maxBreathLength = 0;
-        
-        // Constants for breath analysis
-        const HISTORY_WINDOW = 30; // frames to keep for stability analysis
-        const MAX_BREATH_HISTORY = 5; // number of breaths to show
-        
-        function selectNote(name, minFreq, maxFreq, fingering) {
-            currentNote = { name, minFreq, maxFreq, fingering };
-            
-            // Update UI
-            document.getElementById('targetInfo').textContent = `Practice: ${name} (${minFreq}-${maxFreq} Hz)`;
-            
-            // Update button styles
-            document.querySelectorAll('.note-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            // Update fingering chart
-            updateFingeringChart(fingering);
-            
-            // Reset progress for new note
-            resetProgress();
-        }
-        
-        function updateFingeringChart(fingering) {
-            const holes = document.querySelectorAll('.hole');
-            fingering.forEach((closed, index) => {
-                if (holes[index]) {
-                    holes[index].className = closed ? 'hole hole-closed' : 'hole hole-open';
-                }
-            });
-        }
-        
-        function playReferenceNote() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            
-            // Stop any existing oscillator
-            if (oscillator) {
-                oscillator.stop();
-            }
-            
-            // Create and play new oscillator
-            oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.value = (currentNote.minFreq + currentNote.maxFreq) / 2;
-            oscillator.type = 'sine';
-            
-            // Envelope
-            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
-            gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.5);
-            
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 1.5);
-        }
-        
-        async function startMicrophone() {
+
+        // Safe localStorage functions
+        function safeLocalStorageGet(key) {
             try {
-                document.getElementById('errorMessage').textContent = '';
-                
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    audio: {
-                        echoCancellation: false,
-                        noiseSuppression: false,
-                        autoGainControl: false
-                    } 
-                });
-                
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                microphone = audioContext.createMediaStreamSource(stream);
-                
-                analyser = audioContext.createAnalyser();
-                analyser.fftSize = 2048;
-                analyser.smoothingTimeConstant = 0.8;
-                
-                const bufferLength = analyser.frequencyBinCount;
-                dataArray = new Uint8Array(bufferLength);
-                
-                microphone.connect(analyser);
-                
-                document.getElementById('startButton').disabled = true;
-                document.getElementById('stopButton').disabled = false;
-                
-                monitor();
-                
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('errorMessage').textContent = 
-                    'Error: Could not access microphone. Please ensure you grant permission.';
+                return localStorage.getItem(key);
+            } catch (e) {
+                return null;
             }
         }
         
-        function stopMicrophone() {
-            // Save any remaining correct duration
-            if (lastCorrectTimestamp) {
-                totalCorrectDuration += Date.now() - lastCorrectTimestamp;
-                lastCorrectTimestamp = null;
+        function safeLocalStorageSet(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch (e) {
+                console.log('Progress saved in memory only');
             }
-            
-            // End current breath if active
-            if (currentBreathStart) {
-                endBreath();
-            }
-            
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-            }
-            
-            if (microphone) {
-                microphone.disconnect();
-            }
-            
-            if (audioContext) {
-                audioContext.close();
-            }
-            
-            document.getElementById('startButton').disabled = false;
-            document.getElementById('stopButton').disabled = true;
-            document.getElementById('pitchIndicator').textContent = '🎵';
-            document.getElementById('pitchIndicator').className = 'pitch-indicator';
-            document.getElementById('frequencyDisplay').textContent = 'Play a note...';
-            updateDurationDisplay();
         }
-        
-        function monitor() {
-            analyser.getByteFrequencyData(dataArray);
-            
-            // Find peak frequency
-            let maxValue = 0;
-            let maxIndex = 0;
-            
-            const minBin = Math.floor(200 * dataArray.length / (audioContext.sampleRate / 2));
-            const maxBin = Math.floor(800 * dataArray.length / (audioContext.sampleRate / 2));
-            
-            for (let i = minBin; i < maxBin && i < dataArray.length; i++) {
-                if (dataArray[i] > maxValue) {
-                    maxValue = dataArray[i];
-                    maxIndex = i;
+
+        // Load user progress
+        function loadProgress() {
+            const saved = safeLocalStorageGet('muraliSevaProgress');
+            if (saved) {
+                try {
+                    userProgress = JSON.parse(saved);
+                    updateProgressDisplay();
+                } catch (e) {
+                    console.log('Could not load saved progress');
                 }
             }
+        }
+
+        // Update progress display
+        function updateProgressDisplay() {
+            document.getElementById('musicalScore').textContent = `${userProgress.musical} / 100`;
+            document.getElementById('pranaScore').textContent = `${userProgress.prana} / 100`;
+            document.getElementById('bhaktiScore').textContent = `${userProgress.bhakti} / 100`;
             
-            if (maxValue > 30) {
-                const nyquist = audioContext.sampleRate / 2;
-                const frequency = (maxIndex * nyquist) / dataArray.length;
-                
-                updatePitchDisplay(frequency);
-                checkDuration(frequency);
-                
-                // Breath analysis
-                if (breathAnalysisEnabled) {
-                    analyzeBreath(frequency, maxValue);
-                }
-                
+            document.getElementById('musicalBar').style.width = `${userProgress.musical}%`;
+            document.getElementById('pranaBar').style.width = `${userProgress.prana}%`;
+            document.getElementById('bhaktiBar').style.width = `${userProgress.bhakti}%`;
+        }
+
+        // Navigation functions
+        function startLesson(lessonNumber) {
+            if (lessonNumber === 1) {
+                // Navigate to lesson 1
+                window.location.href = 'lesson1.html';
             } else {
-                document.getElementById('pitchIndicator').textContent = '🎵';
-                document.getElementById('pitchIndicator').className = 'pitch-indicator';
-                document.getElementById('frequencyDisplay').textContent = 'Play louder...';
-                
-                // Note went silent
-                if (lastCorrectTimestamp) {
-                    totalCorrectDuration += Date.now() - lastCorrectTimestamp;
-                    lastCorrectTimestamp = null;
-                    updateDurationDisplay();
-                }
-                
-                // End breath if active
-                if (currentBreathStart) {
-                    endBreath();
-                }
-            }
-            
-            animationId = requestAnimationFrame(monitor);
-        }
-        
-        function analyzeBreath(frequency, amplitude) {
-            // Start new breath if needed
-            if (!currentBreathStart) {
-                currentBreathStart = Date.now();
-                frequencyHistory = [];
-                amplitudeHistory = [];
-            }
-            
-            // Add to history
-            frequencyHistory.push(frequency);
-            amplitudeHistory.push(amplitude);
-            
-            // Keep history window size limited
-            if (frequencyHistory.length > HISTORY_WINDOW) {
-                frequencyHistory.shift();
-                amplitudeHistory.shift();
-            }
-            
-            // Calculate breath metrics
-            if (frequencyHistory.length >= 5) {
-                // Stability: How steady is the pitch?
-                const avgFreq = frequencyHistory.reduce((a, b) => a + b) / frequencyHistory.length;
-                const freqVariance = frequencyHistory.reduce((sum, f) => sum + Math.pow(f - avgFreq, 2), 0) / frequencyHistory.length;
-                const stability = Math.max(0, 100 - Math.sqrt(freqVariance) * 2);
-                
-                // Smoothness: How consistent is the volume?
-                const avgAmp = amplitudeHistory.reduce((a, b) => a + b) / amplitudeHistory.length;
-                const ampVariance = amplitudeHistory.reduce((sum, a) => sum + Math.pow(a - avgAmp, 2), 0) / amplitudeHistory.length;
-                const smoothness = Math.max(0, 100 - Math.sqrt(ampVariance) * 0.5);
-                
-                updateBreathMetrics(stability, smoothness);
-            }
-            
-            // Update current breath length
-            const currentBreathLength = (Date.now() - currentBreathStart) / 1000;
-            document.getElementById('currentBreathLength').textContent = currentBreathLength.toFixed(1) + 's';
-            
-            // Update breath visualization
-            updateBreathVisualization(amplitude);
-        }
-        
-        function updateBreathMetrics(stability, smoothness) {
-            // Update stability
-            document.getElementById('stabilityScore').textContent = Math.round(stability) + '%';
-            const stabilityIndicator = document.getElementById('stabilityIndicator');
-            if (stability >= 80) {
-                stabilityIndicator.textContent = 'Excellent steadiness!';
-                stabilityIndicator.className = 'metric-indicator good';
-            } else if (stability >= 60) {
-                stabilityIndicator.textContent = 'Good control';
-                stabilityIndicator.className = 'metric-indicator medium';
-            } else {
-                stabilityIndicator.textContent = 'Keep practicing';
-                stabilityIndicator.className = 'metric-indicator poor';
-            }
-            
-            // Update smoothness
-            document.getElementById('smoothnessScore').textContent = Math.round(smoothness) + '%';
-            const smoothnessIndicator = document.getElementById('smoothnessIndicator');
-            if (smoothness >= 80) {
-                smoothnessIndicator.textContent = 'Very smooth!';
-                smoothnessIndicator.className = 'metric-indicator good';
-            } else if (smoothness >= 60) {
-                smoothnessIndicator.textContent = 'Good flow';
-                smoothnessIndicator.className = 'metric-indicator medium';
-            } else {
-                smoothnessIndicator.textContent = 'Work on evenness';
-                smoothnessIndicator.className = 'metric-indicator poor';
+                alert('Complete previous lessons first! 🙏');
             }
         }
-        
-        function updateBreathVisualization(amplitude) {
-            const wave = document.getElementById('breathWave');
-            const normalizedHeight = Math.min(100, (amplitude / 255) * 100);
-            wave.style.transform = `scaleY(${normalizedHeight / 100})`;
+
+        function openPractice() {
+            // Navigate to practice mode
+            window.location.href = 'practice.html';
         }
-        
-        function endBreath() {
-            if (!currentBreathStart) return;
-            
-            const breathLength = (Date.now() - currentBreathStart) / 1000;
-            
-            // Only record breaths longer than 1 second
-            if (breathLength > 1) {
-                // Calculate final metrics
-                const avgFreq = frequencyHistory.reduce((a, b) => a + b, 0) / frequencyHistory.length;
-                const freqVariance = frequencyHistory.reduce((sum, f) => sum + Math.pow(f - avgFreq, 2), 0) / frequencyHistory.length;
-                const stability = Math.max(0, 100 - Math.sqrt(freqVariance) * 2);
-                
-                const avgAmp = amplitudeHistory.reduce((a, b) => a + b, 0) / amplitudeHistory.length;
-                const ampVariance = amplitudeHistory.reduce((sum, a) => sum + Math.pow(a - avgAmp, 2), 0) / amplitudeHistory.length;
-                const smoothness = Math.max(0, 100 - Math.sqrt(ampVariance) * 0.5);
-                
-                // Add to history
-                breathHistory.unshift({
-                    length: breathLength,
-                    stability: stability,
-                    smoothness: smoothness,
-                    note: currentNote.name,
-                    timestamp: new Date()
-                });
-                
-                // Keep history limited
-                if (breathHistory.length > MAX_BREATH_HISTORY) {
-                    breathHistory.pop();
-                }
-                
-                // Update longest breath
-                if (breathLength > maxBreathLength) {
-                    maxBreathLength = breathLength;
-                    document.getElementById('longestBreath').textContent = maxBreathLength.toFixed(1) + 's';
-                }
-                
-                updateBreathHistoryDisplay();
-            }
-            
-            currentBreathStart = null;
-            document.getElementById('currentBreathLength').textContent = '0.0s';
+
+        function showAbout() {
+            alert(`🎵 About MuraliSeva 🎵
+
+A revolutionary platform combining:
+• Krishna Bhakti (Devotion)
+• Bansuri Practice (Sacred Flute)
+• Pranayama (Breath Control)
+• Modern Technology & Neuroscience
+
+Created with guidance from Pandit Hari Prasad Chaurasia ji's wisdom and validated by neuroscience research.
+
+Every breath through the sacred bansuri is both a health practice AND an offering to Krishna.
+
+🙏 Begin your sacred journey today!`);
         }
-        
-        function updateBreathHistoryDisplay() {
-            const historyDiv = document.getElementById('breathHistory');
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            loadProgress();
             
-            if (breathHistory.length === 0) {
-                historyDiv.innerHTML = '<p style="color: #666;">Start playing to see breath history...</p>';
-                return;
-            }
+            // Add entrance animations
+            const cards = document.querySelectorAll('.journey-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+
+            // Animate progress bars
+            setTimeout(() => {
+                updateProgressDisplay();
+            }, 1000);
+        });
+
+        // Daily practice reminder
+        function checkDailyPractice() {
+            const lastPractice = safeLocalStorageGet('lastPracticeDate');
+            const today = new Date().toDateString();
             
-            historyDiv.innerHTML = breathHistory.map((breath, index) => {
-                const quality = (breath.stability + breath.smoothness) / 2;
-                let emoji = quality >= 80 ? '🌟' : quality >= 60 ? '👍' : '💪';
-                
-                return `
-                    <div class="history-item">
-                        <span>${emoji} ${breath.note} - ${breath.length.toFixed(1)}s</span>
-                        <span style="font-size: 12px; color: #666;">
-                            Stability: ${Math.round(breath.stability)}% | 
-                            Smooth: ${Math.round(breath.smoothness)}%
-                        </span>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function updatePitchDisplay(frequency) {
-            const indicator = document.getElementById('pitchIndicator');
-            
-            document.getElementById('frequencyDisplay').textContent = `${Math.round(frequency)} Hz`;
-            
-            // Check if frequency is within the target range
-            if (frequency >= currentNote.minFreq && frequency <= currentNote.maxFreq) {
-                indicator.textContent = '✓';
-                indicator.className = 'pitch-indicator pitch-correct';
-            } else {
-                // Check how far off we are
-                let distance;
-                if (frequency < currentNote.minFreq) {
-                    distance = currentNote.minFreq - frequency;
-                } else {
-                    distance = frequency - currentNote.maxFreq;
-                }
-                
-                if (distance < 30) {
-                    indicator.textContent = '~';
-                    indicator.className = 'pitch-indicator pitch-close';
-                } else {
-                    indicator.textContent = '✗';
-                    indicator.className = 'pitch-indicator pitch-wrong';
-                }
-            }
-            
-            // Move indicator vertically based on pitch
-            const centerFreq = (currentNote.minFreq + currentNote.maxFreq) / 2;
-            const cents = 1200 * Math.log2(frequency / centerFreq);
-            const offset = Math.max(-40, Math.min(40, cents / 2));
-            indicator.style.transform = `translate(-50%, calc(-50% - ${offset}px))`;
-        }
-        
-        function checkDuration(frequency) {
-            // Check if frequency is within the target range
-            if (frequency >= currentNote.minFreq && frequency <= currentNote.maxFreq) {
-                // Correct note
-                if (!lastCorrectTimestamp) {
-                    lastCorrectTimestamp = Date.now();
-                }
-                
-                // Calculate current total including this session
-                const currentSessionDuration = Date.now() - lastCorrectTimestamp;
-                const currentTotal = totalCorrectDuration + currentSessionDuration;
-                
-                updateDurationDisplay(currentTotal);
-                
-            } else {
-                // Wrong note - save accumulated time but don't reset total
-                if (lastCorrectTimestamp) {
-                    totalCorrectDuration += Date.now() - lastCorrectTimestamp;
-                    lastCorrectTimestamp = null;
-                    updateDurationDisplay();
-                }
+            if (lastPractice !== today) {
+                setTimeout(() => {
+                    if (confirm('🎵 Ready for your daily bansuri practice?\n\nConsistent practice deepens your connection with Krishna!')) {
+                        startLesson(1);
+                    }
+                }, 5000);
             }
         }
-        
-        function updateDurationDisplay(currentTotal = null) {
-            // Use provided total or the saved total
-            const displayTotal = currentTotal !== null ? currentTotal : totalCorrectDuration;
-            const percentage = Math.min(100, (displayTotal / targetDuration) * 100);
-            
-            document.getElementById('durationFill').style.width = percentage + '%';
-            
-            const secondsHeld = (displayTotal / 1000).toFixed(1);
-            const targetSeconds = (targetDuration / 1000).toFixed(1);
-            
-            document.getElementById('durationText').textContent = `Total held: ${secondsHeld}s / ${targetSeconds}s`;
-            
-            if (percentage >= 100 && !hasCompletedTarget) {
-                hasCompletedTarget = true;
-                document.getElementById('successMessage').style.display = 'block';
-                document.getElementById('durationFill').style.backgroundColor = '#4CAF50';
-                
-                // Play a success sound
-                playSuccessSound();
-            }
-        }
-        
-        function resetProgress() {
-            // Stop any current timing
-            if (lastCorrectTimestamp) {
-                totalCorrectDuration += Date.now() - lastCorrectTimestamp;
-                lastCorrectTimestamp = null;
-            }
-            
-            // Reset all duration tracking
-            totalCorrectDuration = 0;
-            hasCompletedTarget = false;
-            
-            // Reset breath analysis
-            breathHistory = [];
-            maxBreathLength = 0;
-            currentBreathStart = null;
-            frequencyHistory = [];
-            amplitudeHistory = [];
-            
-            // Reset UI
-            document.getElementById('durationFill').style.width = '0%';
-            document.getElementById('durationFill').style.backgroundColor = '#4CAF50';
-            document.getElementById('durationText').textContent = 'Total held: 0.0s / 5.0s';
-            document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('longestBreath').textContent = '0.0s';
-            document.getElementById('stabilityScore').textContent = '--';
-            document.getElementById('smoothnessScore').textContent = '--';
-            updateBreathHistoryDisplay();
-        }
-        
-        function toggleBreathAnalysis() {
-            breathAnalysisEnabled = !breathAnalysisEnabled;
-            const analysisDiv = document.getElementById('breathAnalysis');
-            analysisDiv.style.display = breathAnalysisEnabled ? 'block' : 'none';
-        }
-        
-        function playSuccessSound() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            
-            const osc1 = audioContext.createOscillator();
-            const osc2 = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            osc1.connect(gainNode);
-            osc2.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            // Play a pleasant chord
-            osc1.frequency.value = 523.25; // C5
-            osc2.frequency.value = 659.25; // E5
-            
-            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
-            gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
-            
-            osc1.start();
-            osc2.start();
-            osc1.stop(audioContext.currentTime + 0.5);
-            osc2.stop(audioContext.currentTime + 0.5);
-        }
+
+        // Start daily practice check
+        checkDailyPractice();
     </script>
 </body>
 </html>
