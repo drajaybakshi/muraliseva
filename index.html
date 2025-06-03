@@ -86,10 +86,15 @@
             font-weight: bold;
         }
         
-        .note-display {
-            font-size: 24px;
+        .debug-info {
+            font-size: 14px;
             color: #666;
             margin: 10px 0;
+            text-align: left;
+            background: #FFF;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
         }
         
         .calibration-box {
@@ -120,18 +125,12 @@
             color: #4CAF50;
             margin: 20px 0;
         }
-        
-        .info {
-            color: #2196F3;
-            margin: 10px 0;
-            font-size: 14px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎵 MuraliSeva 🎵</h1>
-        <h2>Bansuri Calibration Mode</h2>
+        <h2>Debug Mode - Bansuri Detection</h2>
         
         <div class="status-box">
             <h3>Microphone Status</h3>
@@ -148,45 +147,21 @@
         
         <div class="pitch-display">
             <div class="frequency-display" id="frequencyDisplay">--- Hz</div>
-            <div class="note-display" id="noteDisplay">Waiting...</div>
             <div class="volume-bar">
                 <div id="volumeFill" class="volume-fill"></div>
+            </div>
+            <div class="debug-info" id="debugInfo">
+                Volume: 0%<br>
+                RMS: 0.000<br>
+                Status: Waiting...
             </div>
         </div>
         
         <div class="calibration-box">
-            <h3>🎯 Calibrate Your Bansuri</h3>
-            <p>Play each note SOFTLY and click to save its frequency:</p>
-            
-            <div>
-                <button class="calibration-button" onclick="calibrateNote('Sa')">
-                    Set Sa (All holes closed)
-                </button>
-                <span id="Sa-freq">Not set</span>
+            <h3>🎯 Frequencies Detected</h3>
+            <div id="frequencyList" style="font-family: monospace; font-size: 16px;">
+                Waiting for sound...
             </div>
-            
-            <div>
-                <button class="calibration-button" onclick="calibrateNote('Re')">
-                    Set Re (Bottom hole open)
-                </button>
-                <span id="Re-freq">Not set</span>
-            </div>
-            
-            <div>
-                <button class="calibration-button" onclick="calibrateNote('Ga')">
-                    Set Ga (Bottom 2 holes open)
-                </button>
-                <span id="Ga-freq">Not set</span>
-            </div>
-            
-            <div>
-                <button class="calibration-button" onclick="calibrateNote('Ma')">
-                    Set Ma (Bottom 3 holes open)
-                </button>
-                <span id="Ma-freq">Not set</span>
-            </div>
-            
-            <p class="info">💡 Tip: Blow SOFTLY for accurate calibration!</p>
         </div>
         
         <div id="errorMessage" class="error"></div>
@@ -198,15 +173,7 @@
         let analyser;
         let dataArray;
         let animationId;
-        let currentFrequency = 0;
-        
-        // Store calibrated frequencies
-        let calibratedFrequencies = {
-            'Sa': null,
-            'Re': null,
-            'Ga': null,
-            'Ma': null
-        };
+        let frequencyHistory = [];
         
         async function startMicrophone() {
             try {
@@ -231,11 +198,11 @@
                 
                 // Create analyser for audio analysis
                 analyser = audioContext.createAnalyser();
-                analyser.fftSize = 4096; // Higher FFT size for better frequency resolution
-                analyser.smoothingTimeConstant = 0.8; // More smoothing
+                analyser.fftSize = 2048; // Good balance for flute
+                analyser.smoothingTimeConstant = 0.8;
                 
-                const bufferLength = analyser.fftSize;
-                dataArray = new Float32Array(bufferLength);
+                const bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
                 
                 // Connect microphone to analyser
                 microphone.connect(analyser);
@@ -280,110 +247,74 @@
             document.getElementById('stopButton').disabled = true;
             document.getElementById('volumeFill').style.width = '0%';
             document.getElementById('frequencyDisplay').textContent = '--- Hz';
-            document.getElementById('noteDisplay').textContent = 'Waiting...';
+            document.getElementById('debugInfo').innerHTML = 'Volume: 0%<br>RMS: 0.000<br>Status: Waiting...';
+            frequencyHistory = [];
         }
         
         function monitor() {
-            // Get time domain data for volume
-            analyser.getFloatTimeDomainData(dataArray);
+            // Get frequency data for FFT-based detection
+            analyser.getByteFrequencyData(dataArray);
             
-            // Calculate volume
-            let sumSquares = 0;
+            // Calculate volume from frequency data
+            let sum = 0;
+            let max = 0;
             for (let i = 0; i < dataArray.length; i++) {
-                sumSquares += dataArray[i] * dataArray[i];
+                sum += dataArray[i];
+                if (dataArray[i] > max) max = dataArray[i];
             }
-            const rms = Math.sqrt(sumSquares / dataArray.length);
-            const volumePercentage = Math.min(100, rms * 800); // More sensitive
+            const average = sum / dataArray.length;
+            const volumePercentage = (max / 255) * 100;
             
             // Update volume bar
             document.getElementById('volumeFill').style.width = volumePercentage + '%';
             
-            // Detect pitch even at low volumes
-            if (volumePercentage > 2) { // Very low threshold
-                const frequency = detectPitch();
-                if (frequency > 0) {
-                    currentFrequency = frequency;
-                    updateDisplay(frequency);
+            // Find peak frequency using FFT data
+            let maxValue = 0;
+            let maxIndex = 0;
+            
+            // Only look at frequencies between 200-800 Hz (typical bansuri range)
+            const minBin = Math.floor(200 * dataArray.length / (audioContext.sampleRate / 2));
+            const maxBin = Math.floor(800 * dataArray.length / (audioContext.sampleRate / 2));
+            
+            for (let i = minBin; i < maxBin && i < dataArray.length; i++) {
+                if (dataArray[i] > maxValue) {
+                    maxValue = dataArray[i];
+                    maxIndex = i;
                 }
+            }
+            
+            // Convert bin to frequency
+            const nyquist = audioContext.sampleRate / 2;
+            const frequency = (maxIndex * nyquist) / dataArray.length;
+            
+            // Update debug info
+            const debugText = `Volume: ${Math.round(volumePercentage)}%<br>` +
+                            `Peak Magnitude: ${maxValue}/255<br>` +
+                            `Average: ${Math.round(average)}<br>` +
+                            `Status: ${maxValue > 30 ? 'Sound detected' : 'Too quiet'}`;
+            
+            document.getElementById('debugInfo').innerHTML = debugText;
+            
+            // Only show frequency if there's significant sound
+            if (maxValue > 30) { // Very low threshold
+                document.getElementById('frequencyDisplay').textContent = `${Math.round(frequency)} Hz`;
+                
+                // Add to history
+                frequencyHistory.push(Math.round(frequency));
+                if (frequencyHistory.length > 10) {
+                    frequencyHistory.shift();
+                }
+                
+                // Show last 10 frequencies
+                document.getElementById('frequencyList').innerHTML = 
+                    `Last 10 readings:<br>${frequencyHistory.join(' Hz, ')} Hz`;
             } else {
                 document.getElementById('frequencyDisplay').textContent = '--- Hz';
-                document.getElementById('noteDisplay').textContent = 'Play louder...';
-                currentFrequency = 0;
             }
             
             // Continue monitoring
             animationId = requestAnimationFrame(monitor);
         }
-        
-        function detectPitch() {
-            analyser.getFloatTimeDomainData(dataArray);
-            
-            // Enhanced autocorrelation-based pitch detection
-            const sampleRate = audioContext.sampleRate;
-            const bufferSize = dataArray.length;
-            
-            // Calculate RMS for threshold
-            let rms = 0;
-            for (let i = 0; i < bufferSize; i++) {
-                rms += dataArray[i] * dataArray[i];
-            }
-            rms = Math.sqrt(rms / bufferSize);
-            
-            if (rms < 0.001) return 0; // Too quiet
-            
-            // Autocorrelation
-            let maxCorrelation = 0;
-            let bestOffset = -1;
-            const minOffset = Math.floor(sampleRate / 600); // 600 Hz max
-            const maxOffset = Math.floor(sampleRate / 80);  // 80 Hz min
-            
-            for (let offset = minOffset; offset < maxOffset && offset < bufferSize / 2; offset++) {
-                let correlation = 0;
-                for (let i = 0; i < bufferSize / 2; i++) {
-                    correlation += dataArray[i] * dataArray[i + offset];
-                }
-                correlation = correlation / (bufferSize / 2);
-                
-                if (correlation > maxCorrelation) {
-                    maxCorrelation = correlation;
-                    bestOffset = offset;
-                }
-            }
-            
-            if (bestOffset > -1 && maxCorrelation > 0.3) {
-                const frequency = sampleRate / bestOffset;
-                return frequency;
-            }
-            
-            return 0;
-        }
-        
-        function updateDisplay(frequency) {
-            document.getElementById('frequencyDisplay').textContent = `${Math.round(frequency)} Hz`;
-            
-            // Find closest note
-            const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-            const A4 = 440;
-            const semitones = 12 * Math.log2(frequency / A4);
-            const noteIndex = Math.round(semitones + 9) % 12;
-            const octave = Math.floor((semitones + 9) / 12) + 4;
-            const noteName = noteNames[(noteIndex + 12) % 12];
-            
-            document.getElementById('noteDisplay').textContent = `Closest: ${noteName}${octave}`;
-        }
-        
-        function calibrateNote(note) {
-            if (currentFrequency > 0) {
-                calibratedFrequencies[note] = currentFrequency;
-                document.getElementById(`${note}-freq`).textContent = `${Math.round(currentFrequency)} Hz`;
-                document.getElementById(`${note}-freq`).style.color = '#4CAF50';
-                
-                alert(`${note} calibrated to ${Math.round(currentFrequency)} Hz`);
-            } else {
-                alert('Please play the note first, then click to calibrate!');
-            }
-        }
-        
         
         // Check if we're on HTTPS (required for microphone)
         if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
