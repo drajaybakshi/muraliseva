@@ -77,57 +77,38 @@
             border-radius: 15px;
             background: #F5F5F5;
             min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
         }
         
         .frequency-display {
-            font-size: 18px;
-            color: #666;
-            margin-top: 10px;
-        }
-        
-        .correct-note {
-            background-color: #4CAF50;
-            color: white;
-        }
-        
-        .close-note {
-            background-color: #FFEB3B;
-            color: #333;
-        }
-        
-        .wrong-note {
-            background-color: #F44336;
-            color: white;
-        }
-        
-        .note-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-        
-        .note-button {
-            background-color: #F5F5F5;
-            color: #333;
-            border: 2px solid #CCC;
-            padding: 15px 25px;
-            font-size: 20px;
+            font-size: 36px;
+            color: #FF8C00;
+            margin: 10px 0;
             font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
         }
         
-        .note-button.active {
-            background-color: #FF8C00;
+        .note-display {
+            font-size: 24px;
+            color: #666;
+            margin: 10px 0;
+        }
+        
+        .calibration-box {
+            background: #E3F2FD;
+            border: 2px solid #2196F3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .calibration-button {
+            background-color: #2196F3;
             color: white;
-            border-color: #FF8C00;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
         }
         
         .error {
@@ -139,12 +120,18 @@
             color: #4CAF50;
             margin: 20px 0;
         }
+        
+        .info {
+            color: #2196F3;
+            margin: 10px 0;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎵 MuraliSeva 🎵</h1>
-        <h2>Bansuri Learning with Real-time Feedback</h2>
+        <h2>Bansuri Calibration Mode</h2>
         
         <div class="status-box">
             <h3>Microphone Status</h3>
@@ -159,27 +146,47 @@
             Stop Microphone
         </button>
         
-        <div class="status-box">
-            <h3>Select Target Note</h3>
-            <div class="note-buttons">
-                <button class="note-button active" onclick="selectNote('Sa')">Sa</button>
-                <button class="note-button" onclick="selectNote('Re')">Re</button>
-                <button class="note-button" onclick="selectNote('Ga')">Ga</button>
-                <button class="note-button" onclick="selectNote('Ma')">Ma</button>
-            </div>
-        </div>
-        
-        <div class="pitch-display" id="pitchDisplay">
-            <div id="noteDisplay">Play a note</div>
-            <div class="frequency-display" id="frequencyDisplay"></div>
-        </div>
-        
-        <div class="status-box">
-            <h3>Sound Level</h3>
+        <div class="pitch-display">
+            <div class="frequency-display" id="frequencyDisplay">--- Hz</div>
+            <div class="note-display" id="noteDisplay">Waiting...</div>
             <div class="volume-bar">
                 <div id="volumeFill" class="volume-fill"></div>
             </div>
-            <p id="volumeText">No sound detected</p>
+        </div>
+        
+        <div class="calibration-box">
+            <h3>🎯 Calibrate Your Bansuri</h3>
+            <p>Play each note SOFTLY and click to save its frequency:</p>
+            
+            <div>
+                <button class="calibration-button" onclick="calibrateNote('Sa')">
+                    Set Sa (All holes closed)
+                </button>
+                <span id="Sa-freq">Not set</span>
+            </div>
+            
+            <div>
+                <button class="calibration-button" onclick="calibrateNote('Re')">
+                    Set Re (Bottom hole open)
+                </button>
+                <span id="Re-freq">Not set</span>
+            </div>
+            
+            <div>
+                <button class="calibration-button" onclick="calibrateNote('Ga')">
+                    Set Ga (Bottom 2 holes open)
+                </button>
+                <span id="Ga-freq">Not set</span>
+            </div>
+            
+            <div>
+                <button class="calibration-button" onclick="calibrateNote('Ma')">
+                    Set Ma (Bottom 3 holes open)
+                </button>
+                <span id="Ma-freq">Not set</span>
+            </div>
+            
+            <p class="info">💡 Tip: Blow SOFTLY for accurate calibration!</p>
         </div>
         
         <div id="errorMessage" class="error"></div>
@@ -191,25 +198,15 @@
         let analyser;
         let dataArray;
         let animationId;
-        let selectedNote = 'Sa';
+        let currentFrequency = 0;
         
-        // Define note frequencies (you can adjust these for your bansuri)
-        const noteFrequencies = {
-            'Sa': 261.63,  // C4
-            'Re': 293.66,  // D4
-            'Ga': 329.63,  // E4
-            'Ma': 349.23   // F4
+        // Store calibrated frequencies
+        let calibratedFrequencies = {
+            'Sa': null,
+            'Re': null,
+            'Ga': null,
+            'Ma': null
         };
-        
-        // Function to select target note
-        function selectNote(note) {
-            selectedNote = note;
-            // Update button styles
-            document.querySelectorAll('.note-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
         
         async function startMicrophone() {
             try {
@@ -234,7 +231,8 @@
                 
                 // Create analyser for audio analysis
                 analyser = audioContext.createAnalyser();
-                analyser.fftSize = 2048;
+                analyser.fftSize = 4096; // Higher FFT size for better frequency resolution
+                analyser.smoothingTimeConstant = 0.8; // More smoothing
                 
                 const bufferLength = analyser.fftSize;
                 dataArray = new Float32Array(bufferLength);
@@ -281,10 +279,8 @@
             document.getElementById('startButton').disabled = false;
             document.getElementById('stopButton').disabled = true;
             document.getElementById('volumeFill').style.width = '0%';
-            document.getElementById('volumeText').textContent = 'No sound detected';
-            document.getElementById('noteDisplay').textContent = 'Play a note';
-            document.getElementById('frequencyDisplay').textContent = '';
-            document.getElementById('pitchDisplay').className = 'pitch-display';
+            document.getElementById('frequencyDisplay').textContent = '--- Hz';
+            document.getElementById('noteDisplay').textContent = 'Waiting...';
         }
         
         function monitor() {
@@ -297,26 +293,22 @@
                 sumSquares += dataArray[i] * dataArray[i];
             }
             const rms = Math.sqrt(sumSquares / dataArray.length);
-            const volumePercentage = Math.min(100, rms * 500); // Adjusted for sensitivity
+            const volumePercentage = Math.min(100, rms * 800); // More sensitive
             
             // Update volume bar
             document.getElementById('volumeFill').style.width = volumePercentage + '%';
             
-            // Update volume text and detect pitch if volume is sufficient
-            if (volumePercentage > 5) {
-                document.getElementById('volumeText').textContent = 
-                    `🎵 Sound detected! Level: ${Math.round(volumePercentage)}%`;
-                
-                // Detect pitch
+            // Detect pitch even at low volumes
+            if (volumePercentage > 2) { // Very low threshold
                 const frequency = detectPitch();
                 if (frequency > 0) {
-                    updatePitchDisplay(frequency);
+                    currentFrequency = frequency;
+                    updateDisplay(frequency);
                 }
             } else {
-                document.getElementById('volumeText').textContent = 'No sound detected';
-                document.getElementById('noteDisplay').textContent = 'Play a note';
-                document.getElementById('frequencyDisplay').textContent = '';
-                document.getElementById('pitchDisplay').className = 'pitch-display';
+                document.getElementById('frequencyDisplay').textContent = '--- Hz';
+                document.getElementById('noteDisplay').textContent = 'Play louder...';
+                currentFrequency = 0;
             }
             
             // Continue monitoring
@@ -326,37 +318,39 @@
         function detectPitch() {
             analyser.getFloatTimeDomainData(dataArray);
             
-            // Simple autocorrelation-based pitch detection
+            // Enhanced autocorrelation-based pitch detection
             const sampleRate = audioContext.sampleRate;
             const bufferSize = dataArray.length;
             
-            // Find the first positive zero crossing
-            let start = 0;
-            for (let i = 1; i < bufferSize; i++) {
-                if (dataArray[i-1] < 0 && dataArray[i] >= 0) {
-                    start = i;
-                    break;
-                }
+            // Calculate RMS for threshold
+            let rms = 0;
+            for (let i = 0; i < bufferSize; i++) {
+                rms += dataArray[i] * dataArray[i];
             }
+            rms = Math.sqrt(rms / bufferSize);
+            
+            if (rms < 0.001) return 0; // Too quiet
             
             // Autocorrelation
             let maxCorrelation = 0;
             let bestOffset = -1;
-            const minOffset = Math.floor(sampleRate / 400); // 400 Hz max
-            const maxOffset = Math.floor(sampleRate / 100); // 100 Hz min
+            const minOffset = Math.floor(sampleRate / 600); // 600 Hz max
+            const maxOffset = Math.floor(sampleRate / 80);  // 80 Hz min
             
-            for (let offset = minOffset; offset < maxOffset && offset < bufferSize - start; offset++) {
+            for (let offset = minOffset; offset < maxOffset && offset < bufferSize / 2; offset++) {
                 let correlation = 0;
-                for (let i = start; i < bufferSize - offset; i++) {
+                for (let i = 0; i < bufferSize / 2; i++) {
                     correlation += dataArray[i] * dataArray[i + offset];
                 }
+                correlation = correlation / (bufferSize / 2);
+                
                 if (correlation > maxCorrelation) {
                     maxCorrelation = correlation;
                     bestOffset = offset;
                 }
             }
             
-            if (bestOffset > -1 && maxCorrelation > 0.01) {
+            if (bestOffset > -1 && maxCorrelation > 0.3) {
                 const frequency = sampleRate / bestOffset;
                 return frequency;
             }
@@ -364,41 +358,32 @@
             return 0;
         }
         
-        function updatePitchDisplay(frequency) {
-            // Find closest note
-            let closestNote = '';
-            let minDiff = Infinity;
-            
-            for (const [note, freq] of Object.entries(noteFrequencies)) {
-                const diff = Math.abs(frequency - freq);
-                if (diff < minDiff) {
-                    minDiff = diff;
-                    closestNote = note;
-                }
-            }
-            
-            // Calculate cents difference
-            const targetFreq = noteFrequencies[selectedNote];
-            const cents = 1200 * Math.log2(frequency / targetFreq);
-            
-            // Update display
-            document.getElementById('noteDisplay').textContent = closestNote;
+        function updateDisplay(frequency) {
             document.getElementById('frequencyDisplay').textContent = `${Math.round(frequency)} Hz`;
             
-            // Update background color based on accuracy
-            const pitchDisplay = document.getElementById('pitchDisplay');
-            pitchDisplay.className = 'pitch-display';
+            // Find closest note
+            const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            const A4 = 440;
+            const semitones = 12 * Math.log2(frequency / A4);
+            const noteIndex = Math.round(semitones + 9) % 12;
+            const octave = Math.floor((semitones + 9) / 12) + 4;
+            const noteName = noteNames[(noteIndex + 12) % 12];
             
-            if (closestNote === selectedNote && Math.abs(cents) <= 20) {
-                pitchDisplay.classList.add('correct-note');
-                document.getElementById('noteDisplay').textContent = `${closestNote} ✓`;
-            } else if (closestNote === selectedNote && Math.abs(cents) <= 50) {
-                pitchDisplay.classList.add('close-note');
-                document.getElementById('noteDisplay').textContent = `${closestNote} ~`;
+            document.getElementById('noteDisplay').textContent = `Closest: ${noteName}${octave}`;
+        }
+        
+        function calibrateNote(note) {
+            if (currentFrequency > 0) {
+                calibratedFrequencies[note] = currentFrequency;
+                document.getElementById(`${note}-freq`).textContent = `${Math.round(currentFrequency)} Hz`;
+                document.getElementById(`${note}-freq`).style.color = '#4CAF50';
+                
+                alert(`${note} calibrated to ${Math.round(currentFrequency)} Hz`);
             } else {
-                pitchDisplay.classList.add('wrong-note');
+                alert('Please play the note first, then click to calibrate!');
             }
         }
+        
         
         // Check if we're on HTTPS (required for microphone)
         if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
