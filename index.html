@@ -199,7 +199,7 @@
         
         <div class="status-box">
             <h3>Target Note Information</h3>
-            <p id="targetInfo">Practice: Sa</p>
+            <p id="targetInfo">Practice: Sa (370-405 Hz)</p>
             <button class="button" onclick="playReferenceNote()">🔊 Play Reference Tone</button>
         </div>
         
@@ -213,10 +213,10 @@
         
         <!-- Note Selection -->
         <div class="note-buttons">
-            <button class="note-button active" onclick="selectNote('Sa', 387, [1,1,1,1,1,1])">Sa</button>
-            <button class="note-button" onclick="selectNote('Re', 435, [1,1,1,1,1,0])">Re</button>
-            <button class="note-button" onclick="selectNote('Ga', 488, [1,1,1,1,0,0])">Ga</button>
-            <button class="note-button" onclick="selectNote('Ma', 517, [1,1,1,0,0,0])">Ma</button>
+            <button class="note-button active" onclick="selectNote('Sa', 370, 405, [1,1,1,1,1,1])">Sa</button>
+            <button class="note-button" onclick="selectNote('Re', 420, 450, [1,1,1,1,1,0])">Re</button>
+            <button class="note-button" onclick="selectNote('Ga', 470, 505, [1,1,1,1,0,0])">Ga</button>
+            <button class="note-button" onclick="selectNote('Ma', 500, 535, [1,1,1,0,0,0])">Ma</button>
         </div>
         
         <!-- Musical Staff Display -->
@@ -259,10 +259,11 @@
         let animationId;
         let oscillator;
         
-        // Current target note
+        // Current target note with frequency range
         let currentNote = {
             name: 'Sa',
-            frequency: 387, // Average of your 375-398 readings
+            minFreq: 370,
+            maxFreq: 405,
             fingering: [1,1,1,1,1,1]
         };
         
@@ -270,11 +271,11 @@
         let correctNoteStartTime = null;
         let targetDuration = 5000; // 5 seconds in milliseconds
         
-        function selectNote(name, freq, fingering) {
-            currentNote = { name, frequency: freq, fingering };
+        function selectNote(name, minFreq, maxFreq, fingering) {
+            currentNote = { name, minFreq, maxFreq, fingering };
             
             // Update UI
-            document.getElementById('targetInfo').textContent = `Practice: ${name} (${freq} Hz)`;
+            document.getElementById('targetInfo').textContent = `Practice: ${name} (${minFreq}-${maxFreq} Hz)`;
             
             // Update button styles
             document.querySelectorAll('.note-button').forEach(btn => {
@@ -315,7 +316,7 @@
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
             
-            oscillator.frequency.value = currentNote.frequency;
+            oscillator.frequency.value = (currentNote.minFreq + currentNote.maxFreq) / 2;
             oscillator.type = 'sine';
             
             // Envelope
@@ -418,31 +419,42 @@
         }
         
         function updatePitchDisplay(frequency) {
-            const cents = 1200 * Math.log2(frequency / currentNote.frequency);
             const indicator = document.getElementById('pitchIndicator');
             
             document.getElementById('frequencyDisplay').textContent = `${Math.round(frequency)} Hz`;
             
-            if (Math.abs(cents) <= 20) {
+            // Check if frequency is within the target range
+            if (frequency >= currentNote.minFreq && frequency <= currentNote.maxFreq) {
                 indicator.textContent = '✓';
                 indicator.className = 'pitch-indicator pitch-correct';
-            } else if (Math.abs(cents) <= 50) {
-                indicator.textContent = '~';
-                indicator.className = 'pitch-indicator pitch-close';
             } else {
-                indicator.textContent = '✗';
-                indicator.className = 'pitch-indicator pitch-wrong';
+                // Check how far off we are
+                let distance;
+                if (frequency < currentNote.minFreq) {
+                    distance = currentNote.minFreq - frequency;
+                } else {
+                    distance = frequency - currentNote.maxFreq;
+                }
+                
+                if (distance < 30) {
+                    indicator.textContent = '~';
+                    indicator.className = 'pitch-indicator pitch-close';
+                } else {
+                    indicator.textContent = '✗';
+                    indicator.className = 'pitch-indicator pitch-wrong';
+                }
             }
             
             // Move indicator vertically based on pitch
+            const centerFreq = (currentNote.minFreq + currentNote.maxFreq) / 2;
+            const cents = 1200 * Math.log2(frequency / centerFreq);
             const offset = Math.max(-40, Math.min(40, cents / 2));
             indicator.style.transform = `translate(-50%, calc(-50% - ${offset}px))`;
         }
         
         function checkDuration(frequency) {
-            const cents = 1200 * Math.log2(frequency / currentNote.frequency);
-            
-            if (Math.abs(cents) <= 20) {
+            // Check if frequency is within the target range
+            if (frequency >= currentNote.minFreq && frequency <= currentNote.maxFreq) {
                 // Correct note
                 if (!correctNoteStartTime) {
                     correctNoteStartTime = Date.now();
