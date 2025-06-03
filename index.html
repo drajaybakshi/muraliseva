@@ -55,6 +55,12 @@
             cursor: not-allowed;
         }
         
+        .button.secondary {
+            background-color: #666;
+            font-size: 14px;
+            padding: 8px 15px;
+        }
+        
         /* Note selection buttons */
         .note-buttons {
             display: flex;
@@ -140,13 +146,32 @@
             border-radius: 15px;
             overflow: hidden;
             margin: 10px 0;
+            position: relative;
         }
         
         .duration-fill {
             height: 100%;
             background-color: #4CAF50;
             width: 0%;
-            transition: none;
+            transition: width 0.3s ease;
+        }
+        
+        .duration-segments {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+        
+        .segment {
+            flex: 1;
+            border-right: 2px solid #CCCCCC;
+        }
+        
+        .segment:last-child {
+            border-right: none;
         }
         
         /* Fingering chart */
@@ -190,6 +215,23 @@
             color: #F44336;
             margin: 20px 0;
         }
+        
+        .success-message {
+            color: #4CAF50;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .mode-indicator {
+            background: #E3F2FD;
+            border: 2px solid #2196F3;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            font-weight: bold;
+            color: #1976D2;
+        }
     </style>
 </head>
 <body>
@@ -211,6 +253,15 @@
             Stop Practice
         </button>
         
+        <button class="button secondary" onclick="resetProgress()">
+            Reset Progress
+        </button>
+        
+        <!-- Mode indicator -->
+        <div class="mode-indicator">
+            🎯 Beginner Mode: Cumulative Duration (Pauses allowed!)
+        </div>
+        
         <!-- Note Selection -->
         <div class="note-buttons">
             <button class="note-button active" onclick="selectNote('Sa', 370, 405, [1,1,1,1,1,1])">Sa</button>
@@ -227,11 +278,19 @@
         
         <!-- Duration Progress -->
         <div class="duration-container">
-            <h4>Sustained Note Duration</h4>
+            <h4>Sustained Note Duration (Cumulative)</h4>
             <div class="duration-bar">
                 <div id="durationFill" class="duration-fill"></div>
+                <div class="duration-segments">
+                    <div class="segment"></div>
+                    <div class="segment"></div>
+                    <div class="segment"></div>
+                    <div class="segment"></div>
+                    <div class="segment"></div>
+                </div>
             </div>
-            <p id="durationText">Hold the correct note for 5 seconds</p>
+            <p id="durationText">Total held: 0.0s / 5.0s</p>
+            <p id="successMessage" class="success-message" style="display: none;">🎉 Excellent! You completed 5 seconds!</p>
         </div>
         
         <!-- Fingering Chart -->
@@ -267,9 +326,11 @@
             fingering: [1,1,1,1,1,1]
         };
         
-        // Duration tracking
-        let correctNoteStartTime = null;
+        // Duration tracking - NOW CUMULATIVE!
+        let totalCorrectDuration = 0; // Total accumulated time
+        let lastCorrectTimestamp = null; // When we last started playing correctly
         let targetDuration = 5000; // 5 seconds in milliseconds
+        let hasCompletedTarget = false;
         
         function selectNote(name, minFreq, maxFreq, fingering) {
             currentNote = { name, minFreq, maxFreq, fingering };
@@ -286,8 +347,8 @@
             // Update fingering chart
             updateFingeringChart(fingering);
             
-            // Reset duration
-            resetDuration();
+            // Reset progress for new note
+            resetProgress();
         }
         
         function updateFingeringChart(fingering) {
@@ -365,6 +426,12 @@
         }
         
         function stopMicrophone() {
+            // Save any remaining correct duration
+            if (lastCorrectTimestamp) {
+                totalCorrectDuration += Date.now() - lastCorrectTimestamp;
+                lastCorrectTimestamp = null;
+            }
+            
             if (animationId) {
                 cancelAnimationFrame(animationId);
             }
@@ -382,7 +449,7 @@
             document.getElementById('pitchIndicator').textContent = '🎵';
             document.getElementById('pitchIndicator').className = 'pitch-indicator';
             document.getElementById('frequencyDisplay').textContent = 'Play a note...';
-            resetDuration();
+            updateDurationDisplay();
         }
         
         function monitor() {
@@ -412,7 +479,12 @@
                 document.getElementById('pitchIndicator').textContent = '🎵';
                 document.getElementById('pitchIndicator').className = 'pitch-indicator';
                 document.getElementById('frequencyDisplay').textContent = 'Play louder...';
-                resetDuration();
+                // Note went silent - save accumulated time but don't reset
+                if (lastCorrectTimestamp) {
+                    totalCorrectDuration += Date.now() - lastCorrectTimestamp;
+                    lastCorrectTimestamp = null;
+                    updateDurationDisplay();
+                }
             }
             
             animationId = requestAnimationFrame(monitor);
@@ -456,33 +528,91 @@
             // Check if frequency is within the target range
             if (frequency >= currentNote.minFreq && frequency <= currentNote.maxFreq) {
                 // Correct note
-                if (!correctNoteStartTime) {
-                    correctNoteStartTime = Date.now();
+                if (!lastCorrectTimestamp) {
+                    lastCorrectTimestamp = Date.now();
                 }
                 
-                const elapsed = Date.now() - correctNoteStartTime;
-                const percentage = Math.min(100, (elapsed / targetDuration) * 100);
+                // Calculate current total including this session
+                const currentSessionDuration = Date.now() - lastCorrectTimestamp;
+                const currentTotal = totalCorrectDuration + currentSessionDuration;
                 
-                document.getElementById('durationFill').style.width = percentage + '%';
+                updateDurationDisplay(currentTotal);
                 
-                if (percentage >= 100) {
-                    document.getElementById('durationText').textContent = '✅ Great! You held the note!';
-                    document.getElementById('durationFill').style.backgroundColor = '#4CAF50';
-                } else {
-                    const remaining = Math.ceil((targetDuration - elapsed) / 1000);
-                    document.getElementById('durationText').textContent = `Hold for ${remaining} more seconds...`;
-                }
             } else {
-                // Wrong note - pause duration
-                resetDuration();
+                // Wrong note - save accumulated time but don't reset total
+                if (lastCorrectTimestamp) {
+                    totalCorrectDuration += Date.now() - lastCorrectTimestamp;
+                    lastCorrectTimestamp = null;
+                    updateDurationDisplay();
+                }
             }
         }
         
-        function resetDuration() {
-            correctNoteStartTime = null;
+        function updateDurationDisplay(currentTotal = null) {
+            // Use provided total or the saved total
+            const displayTotal = currentTotal !== null ? currentTotal : totalCorrectDuration;
+            const percentage = Math.min(100, (displayTotal / targetDuration) * 100);
+            
+            document.getElementById('durationFill').style.width = percentage + '%';
+            
+            const secondsHeld = (displayTotal / 1000).toFixed(1);
+            const targetSeconds = (targetDuration / 1000).toFixed(1);
+            
+            document.getElementById('durationText').textContent = `Total held: ${secondsHeld}s / ${targetSeconds}s`;
+            
+            if (percentage >= 100 && !hasCompletedTarget) {
+                hasCompletedTarget = true;
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('durationFill').style.backgroundColor = '#4CAF50';
+                
+                // Play a success sound
+                playSuccessSound();
+            }
+        }
+        
+        function resetProgress() {
+            // Stop any current timing
+            if (lastCorrectTimestamp) {
+                totalCorrectDuration += Date.now() - lastCorrectTimestamp;
+                lastCorrectTimestamp = null;
+            }
+            
+            // Reset all duration tracking
+            totalCorrectDuration = 0;
+            hasCompletedTarget = false;
+            
+            // Reset UI
             document.getElementById('durationFill').style.width = '0%';
             document.getElementById('durationFill').style.backgroundColor = '#4CAF50';
-            document.getElementById('durationText').textContent = 'Hold the correct note for 5 seconds';
+            document.getElementById('durationText').textContent = 'Total held: 0.0s / 5.0s';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+        
+        function playSuccessSound() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            const osc1 = audioContext.createOscillator();
+            const osc2 = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            osc1.connect(gainNode);
+            osc2.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Play a pleasant chord
+            osc1.frequency.value = 523.25; // C5
+            osc2.frequency.value = 659.25; // E5
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
+            gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
+            
+            osc1.start();
+            osc2.start();
+            osc1.stop(audioContext.currentTime + 0.5);
+            osc2.stop(audioContext.currentTime + 0.5);
         }
     </script>
 </body>
