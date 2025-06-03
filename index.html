@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MuraliSeva - Bansuri Learning App</title>
+    <title>MuraliSeva - Bansuri & Pranayama Practice</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -174,6 +174,73 @@
             border-right: none;
         }
         
+        /* Breath Analysis Section */
+        .breath-analysis {
+            background: #E8F5E9;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .breath-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .metric-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .metric-indicator {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .good { color: #4CAF50; }
+        .medium { color: #FF9800; }
+        .poor { color: #F44336; }
+        
+        /* Breath visualization */
+        .breath-viz {
+            background: white;
+            border: 2px solid #CCCCCC;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            height: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .breath-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(76, 175, 80, 0.3), transparent);
+            transform-origin: bottom;
+            transition: transform 0.1s ease;
+        }
+        
         /* Fingering chart */
         .fingering-display {
             background: #F5F5F5;
@@ -232,12 +299,23 @@
             font-weight: bold;
             color: #1976D2;
         }
+        
+        .history-item {
+            background: white;
+            border: 1px solid #CCCCCC;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎵 MuraliSeva 🎵</h1>
-        <h2>Practice Mode - Your Bansuri (F#/G)</h2>
+        <h2>Bansuri & Pranayama Practice</h2>
         
         <div class="status-box">
             <h3>Target Note Information</h3>
@@ -257,9 +335,13 @@
             Reset Progress
         </button>
         
+        <button class="button secondary" onclick="toggleBreathAnalysis()">
+            Toggle Breath Analysis
+        </button>
+        
         <!-- Mode indicator -->
         <div class="mode-indicator">
-            🎯 Beginner Mode: Cumulative Duration (Pauses allowed!)
+            🎯 Pranayama Mode: Tracking breath quality & stability
         </div>
         
         <!-- Note Selection -->
@@ -274,6 +356,51 @@
         <div class="staff-container">
             <div id="pitchIndicator" class="pitch-indicator">🎵</div>
             <div class="frequency-display" id="frequencyDisplay">Play a note...</div>
+        </div>
+        
+        <!-- Breath Analysis Section -->
+        <div id="breathAnalysis" class="breath-analysis">
+            <h3>🌬️ Breath Analysis</h3>
+            
+            <div class="breath-metrics">
+                <div class="metric-box">
+                    <div class="metric-label">Stability</div>
+                    <div class="metric-value" id="stabilityScore">--</div>
+                    <div class="metric-indicator" id="stabilityIndicator">Pitch steadiness</div>
+                </div>
+                
+                <div class="metric-box">
+                    <div class="metric-label">Smoothness</div>
+                    <div class="metric-value" id="smoothnessScore">--</div>
+                    <div class="metric-indicator" id="smoothnessIndicator">Volume consistency</div>
+                </div>
+                
+                <div class="metric-box">
+                    <div class="metric-label">Current Breath</div>
+                    <div class="metric-value" id="currentBreathLength">0.0s</div>
+                    <div class="metric-indicator">Length</div>
+                </div>
+                
+                <div class="metric-box">
+                    <div class="metric-label">Longest Breath</div>
+                    <div class="metric-value" id="longestBreath">0.0s</div>
+                    <div class="metric-indicator">Session best</div>
+                </div>
+            </div>
+            
+            <!-- Breath Visualization -->
+            <div class="breath-viz">
+                <div id="breathWave" class="breath-wave"></div>
+                <div style="position: absolute; top: 10px; left: 10px; color: #666; font-size: 14px;">
+                    Breath Flow Visualization
+                </div>
+            </div>
+            
+            <!-- Recent Breaths History -->
+            <h4>Recent Breaths</h4>
+            <div id="breathHistory">
+                <p style="color: #666;">Start playing to see breath history...</p>
+            </div>
         </div>
         
         <!-- Duration Progress -->
@@ -326,11 +453,23 @@
             fingering: [1,1,1,1,1,1]
         };
         
-        // Duration tracking - NOW CUMULATIVE!
-        let totalCorrectDuration = 0; // Total accumulated time
-        let lastCorrectTimestamp = null; // When we last started playing correctly
-        let targetDuration = 5000; // 5 seconds in milliseconds
+        // Duration tracking
+        let totalCorrectDuration = 0;
+        let lastCorrectTimestamp = null;
+        let targetDuration = 5000;
         let hasCompletedTarget = false;
+        
+        // Breath analysis variables
+        let breathAnalysisEnabled = true;
+        let currentBreathStart = null;
+        let breathHistory = [];
+        let frequencyHistory = [];
+        let amplitudeHistory = [];
+        let maxBreathLength = 0;
+        
+        // Constants for breath analysis
+        const HISTORY_WINDOW = 30; // frames to keep for stability analysis
+        const MAX_BREATH_HISTORY = 5; // number of breaths to show
         
         function selectNote(name, minFreq, maxFreq, fingering) {
             currentNote = { name, minFreq, maxFreq, fingering };
@@ -432,6 +571,11 @@
                 lastCorrectTimestamp = null;
             }
             
+            // End current breath if active
+            if (currentBreathStart) {
+                endBreath();
+            }
+            
             if (animationId) {
                 cancelAnimationFrame(animationId);
             }
@@ -475,19 +619,175 @@
                 
                 updatePitchDisplay(frequency);
                 checkDuration(frequency);
+                
+                // Breath analysis
+                if (breathAnalysisEnabled) {
+                    analyzeBreath(frequency, maxValue);
+                }
+                
             } else {
                 document.getElementById('pitchIndicator').textContent = '🎵';
                 document.getElementById('pitchIndicator').className = 'pitch-indicator';
                 document.getElementById('frequencyDisplay').textContent = 'Play louder...';
-                // Note went silent - save accumulated time but don't reset
+                
+                // Note went silent
                 if (lastCorrectTimestamp) {
                     totalCorrectDuration += Date.now() - lastCorrectTimestamp;
                     lastCorrectTimestamp = null;
                     updateDurationDisplay();
                 }
+                
+                // End breath if active
+                if (currentBreathStart) {
+                    endBreath();
+                }
             }
             
             animationId = requestAnimationFrame(monitor);
+        }
+        
+        function analyzeBreath(frequency, amplitude) {
+            // Start new breath if needed
+            if (!currentBreathStart) {
+                currentBreathStart = Date.now();
+                frequencyHistory = [];
+                amplitudeHistory = [];
+            }
+            
+            // Add to history
+            frequencyHistory.push(frequency);
+            amplitudeHistory.push(amplitude);
+            
+            // Keep history window size limited
+            if (frequencyHistory.length > HISTORY_WINDOW) {
+                frequencyHistory.shift();
+                amplitudeHistory.shift();
+            }
+            
+            // Calculate breath metrics
+            if (frequencyHistory.length >= 5) {
+                // Stability: How steady is the pitch?
+                const avgFreq = frequencyHistory.reduce((a, b) => a + b) / frequencyHistory.length;
+                const freqVariance = frequencyHistory.reduce((sum, f) => sum + Math.pow(f - avgFreq, 2), 0) / frequencyHistory.length;
+                const stability = Math.max(0, 100 - Math.sqrt(freqVariance) * 2);
+                
+                // Smoothness: How consistent is the volume?
+                const avgAmp = amplitudeHistory.reduce((a, b) => a + b) / amplitudeHistory.length;
+                const ampVariance = amplitudeHistory.reduce((sum, a) => sum + Math.pow(a - avgAmp, 2), 0) / amplitudeHistory.length;
+                const smoothness = Math.max(0, 100 - Math.sqrt(ampVariance) * 0.5);
+                
+                updateBreathMetrics(stability, smoothness);
+            }
+            
+            // Update current breath length
+            const currentBreathLength = (Date.now() - currentBreathStart) / 1000;
+            document.getElementById('currentBreathLength').textContent = currentBreathLength.toFixed(1) + 's';
+            
+            // Update breath visualization
+            updateBreathVisualization(amplitude);
+        }
+        
+        function updateBreathMetrics(stability, smoothness) {
+            // Update stability
+            document.getElementById('stabilityScore').textContent = Math.round(stability) + '%';
+            const stabilityIndicator = document.getElementById('stabilityIndicator');
+            if (stability >= 80) {
+                stabilityIndicator.textContent = 'Excellent steadiness!';
+                stabilityIndicator.className = 'metric-indicator good';
+            } else if (stability >= 60) {
+                stabilityIndicator.textContent = 'Good control';
+                stabilityIndicator.className = 'metric-indicator medium';
+            } else {
+                stabilityIndicator.textContent = 'Keep practicing';
+                stabilityIndicator.className = 'metric-indicator poor';
+            }
+            
+            // Update smoothness
+            document.getElementById('smoothnessScore').textContent = Math.round(smoothness) + '%';
+            const smoothnessIndicator = document.getElementById('smoothnessIndicator');
+            if (smoothness >= 80) {
+                smoothnessIndicator.textContent = 'Very smooth!';
+                smoothnessIndicator.className = 'metric-indicator good';
+            } else if (smoothness >= 60) {
+                smoothnessIndicator.textContent = 'Good flow';
+                smoothnessIndicator.className = 'metric-indicator medium';
+            } else {
+                smoothnessIndicator.textContent = 'Work on evenness';
+                smoothnessIndicator.className = 'metric-indicator poor';
+            }
+        }
+        
+        function updateBreathVisualization(amplitude) {
+            const wave = document.getElementById('breathWave');
+            const normalizedHeight = Math.min(100, (amplitude / 255) * 100);
+            wave.style.transform = `scaleY(${normalizedHeight / 100})`;
+        }
+        
+        function endBreath() {
+            if (!currentBreathStart) return;
+            
+            const breathLength = (Date.now() - currentBreathStart) / 1000;
+            
+            // Only record breaths longer than 1 second
+            if (breathLength > 1) {
+                // Calculate final metrics
+                const avgFreq = frequencyHistory.reduce((a, b) => a + b, 0) / frequencyHistory.length;
+                const freqVariance = frequencyHistory.reduce((sum, f) => sum + Math.pow(f - avgFreq, 2), 0) / frequencyHistory.length;
+                const stability = Math.max(0, 100 - Math.sqrt(freqVariance) * 2);
+                
+                const avgAmp = amplitudeHistory.reduce((a, b) => a + b, 0) / amplitudeHistory.length;
+                const ampVariance = amplitudeHistory.reduce((sum, a) => sum + Math.pow(a - avgAmp, 2), 0) / amplitudeHistory.length;
+                const smoothness = Math.max(0, 100 - Math.sqrt(ampVariance) * 0.5);
+                
+                // Add to history
+                breathHistory.unshift({
+                    length: breathLength,
+                    stability: stability,
+                    smoothness: smoothness,
+                    note: currentNote.name,
+                    timestamp: new Date()
+                });
+                
+                // Keep history limited
+                if (breathHistory.length > MAX_BREATH_HISTORY) {
+                    breathHistory.pop();
+                }
+                
+                // Update longest breath
+                if (breathLength > maxBreathLength) {
+                    maxBreathLength = breathLength;
+                    document.getElementById('longestBreath').textContent = maxBreathLength.toFixed(1) + 's';
+                }
+                
+                updateBreathHistoryDisplay();
+            }
+            
+            currentBreathStart = null;
+            document.getElementById('currentBreathLength').textContent = '0.0s';
+        }
+        
+        function updateBreathHistoryDisplay() {
+            const historyDiv = document.getElementById('breathHistory');
+            
+            if (breathHistory.length === 0) {
+                historyDiv.innerHTML = '<p style="color: #666;">Start playing to see breath history...</p>';
+                return;
+            }
+            
+            historyDiv.innerHTML = breathHistory.map((breath, index) => {
+                const quality = (breath.stability + breath.smoothness) / 2;
+                let emoji = quality >= 80 ? '🌟' : quality >= 60 ? '👍' : '💪';
+                
+                return `
+                    <div class="history-item">
+                        <span>${emoji} ${breath.note} - ${breath.length.toFixed(1)}s</span>
+                        <span style="font-size: 12px; color: #666;">
+                            Stability: ${Math.round(breath.stability)}% | 
+                            Smooth: ${Math.round(breath.smoothness)}%
+                        </span>
+                    </div>
+                `;
+            }).join('');
         }
         
         function updatePitchDisplay(frequency) {
@@ -581,11 +881,28 @@
             totalCorrectDuration = 0;
             hasCompletedTarget = false;
             
+            // Reset breath analysis
+            breathHistory = [];
+            maxBreathLength = 0;
+            currentBreathStart = null;
+            frequencyHistory = [];
+            amplitudeHistory = [];
+            
             // Reset UI
             document.getElementById('durationFill').style.width = '0%';
             document.getElementById('durationFill').style.backgroundColor = '#4CAF50';
             document.getElementById('durationText').textContent = 'Total held: 0.0s / 5.0s';
             document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('longestBreath').textContent = '0.0s';
+            document.getElementById('stabilityScore').textContent = '--';
+            document.getElementById('smoothnessScore').textContent = '--';
+            updateBreathHistoryDisplay();
+        }
+        
+        function toggleBreathAnalysis() {
+            breathAnalysisEnabled = !breathAnalysisEnabled;
+            const analysisDiv = document.getElementById('breathAnalysis');
+            analysisDiv.style.display = breathAnalysisEnabled ? 'block' : 'none';
         }
         
         function playSuccessSound() {
