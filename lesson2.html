@@ -519,12 +519,16 @@
             overflow: hidden;
         }
         
+        @keyframes progressAnimation {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+        
         .timing-indicator {
             position: absolute;
             height: 100%;
             width: 0%;
             background: #4CAF50;
-            transition: width linear;
         }
     </style>
 </head>
@@ -1327,7 +1331,7 @@
             // Requirement 3: Smooth transitions
             if (transitionCount >= 4) {
                 const smoothnessPercent = (smoothTransitions / transitionCount) * 100;
-                if (smoothnessPercent >= 60) {
+                if (smoothnessPercent >= 25) {  // Lowered from 60% to 25%
                     document.getElementById('req3').textContent = '✓';
                     document.getElementById('req3').classList.add('completed');
                     document.getElementById('req3Status').textContent = `(${Math.round(smoothnessPercent)}% smooth!)`;
@@ -1348,7 +1352,7 @@
             }
             
             // Check completion
-            const hasSmoothtransitions = transitionCount >= 4 && (smoothTransitions / transitionCount) >= 0.6;
+            const hasSmoothtransitions = transitionCount >= 4 && (smoothTransitions / transitionCount) >= 0.25;  // 25% instead of 60%
             if (correctReCount >= 3 && patternCompletions >= 2 && longestBreath >= 8 && hasSmoothtransitions && !hasCompletedRequirements) {
                 hasCompletedRequirements = true;
                 document.getElementById('continueBtn').style.display = 'inline-block';
@@ -1404,33 +1408,47 @@
         
         function animateTimingBar() {
             const indicator = document.getElementById('timingIndicator');
-            let phase = 0;
-            const phases = [
-                { width: '20%', duration: 2500, color: '#4CAF50' },  // Sa
-                { width: '40%', duration: 1000, color: '#2196F3' },  // Transition
-                { width: '60%', duration: 2500, color: '#4CAF50' },  // Re
-                { width: '80%', duration: 1000, color: '#2196F3' },  // Transition
-                { width: '100%', duration: 2500, color: '#4CAF50' }  // Sa
+            const guide = document.getElementById('transitionGuide');
+            
+            // Only animate if guide is visible
+            if (guide.style.display === 'none') return;
+            
+            // Reset and start animation
+            indicator.style.animation = 'none';
+            indicator.offsetHeight; // Force reflow
+            indicator.style.animation = 'progressAnimation 9s linear infinite';
+            
+            // Color changes during animation
+            let colorPhase = 0;
+            const colorChanges = [
+                { time: 0, color: '#4CAF50' },      // Sa (green)
+                { time: 2500, color: '#2196F3' },   // Transition (blue)
+                { time: 3500, color: '#4CAF50' },   // Re (green)
+                { time: 6000, color: '#2196F3' },   // Transition (blue)
+                { time: 7000, color: '#4CAF50' }    // Sa (green)
             ];
             
-            function nextPhase() {
-                if (phase >= phases.length) {
-                    phase = 0;
-                    indicator.style.width = '0%';
-                    setTimeout(nextPhase, 100);
-                    return;
+            function updateColor() {
+                if (guide.style.display === 'none') return;
+                
+                if (colorPhase < colorChanges.length) {
+                    indicator.style.background = colorChanges[colorPhase].color;
+                    colorPhase++;
+                    
+                    if (colorPhase < colorChanges.length) {
+                        const nextDelay = colorChanges[colorPhase].time - colorChanges[colorPhase - 1].time;
+                        setTimeout(updateColor, nextDelay);
+                    } else {
+                        // Reset after full cycle
+                        setTimeout(() => {
+                            colorPhase = 0;
+                            updateColor();
+                        }, 2000);
+                    }
                 }
-                
-                const current = phases[phase];
-                indicator.style.width = current.width;
-                indicator.style.background = current.color;
-                indicator.style.transition = `width ${current.duration}ms linear`;
-                
-                phase++;
-                setTimeout(nextPhase, current.duration);
             }
             
-            nextPhase();
+            updateColor();
         }
         
         function selectFlute(type, saMin, saMax) {
