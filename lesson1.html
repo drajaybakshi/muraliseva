@@ -594,12 +594,9 @@
     <div class="modal-overlay" onclick="closeCalibration()"></div>
     <div class="calibration-modal">
         <h2>🎵 Calibrate Your Bansuri</h2>
-        <p>Select your flute type or let us auto-detect:</p>
-        
-        <button class="button" onclick="autoDetectFlute(this)">🎤 Auto-Detect My Flute</button>
+        <p>Select your flute type based on your Sa frequency:</p>
         
         <div style="margin: 20px 0;">
-            <h3>Or choose manually:</h3>
             <div class="flute-option" onclick="selectFlute('C', 261, 277)">
                 <strong>C Medium</strong> - Sa at 261-277 Hz<br>
                 <small>Most common for beginners</small>
@@ -613,23 +610,23 @@
             <div class="flute-option" onclick="selectFlute('F', 349, 370)">
                 <strong>F Medium</strong> - Sa at 349-370 Hz
             </div>
-            <div class="flute-option" onclick="selectFlute('F#', 370, 392)">
-                <strong>F# Medium</strong> - Sa at 370-392 Hz
+            <div class="flute-option" onclick="selectFlute('F#', 370, 392)" style="border: 3px solid #FF8C00;">
+                <strong>F# Medium</strong> - Sa at 370-392 Hz<br>
+                <small style="color: #FF8C00;">← Your flute (375-380 Hz) is likely this</small>
             </div>
             <div class="flute-option" onclick="selectFlute('G', 392, 415)">
-                <strong>G Medium</strong> - Sa at 392-415 Hz<br>
-                <small>Your flute seems to be around here</small>
+                <strong>G Medium</strong> - Sa at 392-415 Hz
             </div>
             <div class="flute-option" onclick="selectFlute('A', 440, 466)">
                 <strong>A Medium</strong> - Sa at 440-466 Hz
             </div>
         </div>
         
-        <div id="detectionResult" style="display:none; margin: 20px 0; padding: 15px; background: #E8F5E9; border-radius: 8px;">
-            <p id="detectionText"></p>
-        </div>
+        <p style="text-align: center; color: #666; margin-top: 20px;">
+            <small>Based on your 375-380 Hz reading, select <strong>F# Medium</strong></small>
+        </p>
         
-        <button class="button secondary" onclick="closeCalibration()">Close</button>
+        <button class="button secondary" onclick="closeCalibration()">Cancel</button>
     </div>
     
     <!-- Achievement Popup -->
