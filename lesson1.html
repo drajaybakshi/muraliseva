@@ -268,10 +268,18 @@
             background-color: #333;
         }
         
+        /* Fix for overlapping arrow */
         .frequency-display {
             font-size: 18px;
             color: #666;
             margin: 10px 0;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 2px 10px;
+            border-radius: 4px;
         }
         
         /* Progress indicator */
@@ -443,7 +451,12 @@
         <!-- Stage 3: Practice Sa -->
         <div id="stage3" class="lesson-stage">
             <h1>🎵 Finding Sa - Your First Divine Sound</h1>
-            <h2>Target: Sa (261-277 Hz)</h2>
+            <h2 id="targetRange">Target: Sa (370-395 Hz)</h2>
+            
+            <div class="status-box" style="background: #E3F2FD; margin-bottom: 15px;">
+                <p>🎵 Auto-detected your flute: G Medium Bansuri</p>
+                <button class="button secondary" onclick="showCalibration()">Adjust Calibration</button>
+            </div>
             
             <div class="status-box">
                 <p>Listen to Sa first, then practice playing it</p>
@@ -594,10 +607,18 @@
         let dataArray;
         let animationId;
         
-        // Target note: Sa (C4)
-        const SA_MIN_FREQ = 261;
-        const SA_MAX_FREQ = 277;
-        const SA_CENTER_FREQ = 269;
+        // Target note: Sa - adjustable for different flutes
+        // Standard ranges for different bansuri keys:
+        // C Medium: 261-277 Hz
+        // D Medium: 294-311 Hz  
+        // E Medium: 330-349 Hz
+        // F Medium: 349-370 Hz
+        // G Medium: 392-415 Hz
+        
+        // Your bansuri seems to be F# or G
+        let SA_MIN_FREQ = 370;
+        let SA_MAX_FREQ = 395;
+        let SA_CENTER_FREQ = 382;
         
         // Progress tracking
         let correctNoteCount = 0;
