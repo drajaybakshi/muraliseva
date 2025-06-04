@@ -699,6 +699,146 @@
         // Current stage
         let currentStage = 1;
         
+        // Frequency test variables - MOVED UP HERE
+        let testContext;
+        let testMicrophone;
+        let testAnalyser;
+        let testDataArray;
+        let testAnimationId;
+        let testStream;
+        
+        // Define frequency test functions FIRST
+        async function startFrequencyTest() {
+            console.log('Starting frequency test...');
+            try {
+                const testBtn = document.getElementById('testFreqBtn');
+                const stopBtn = document.getElementById('stopTestBtn');
+                
+                if (testBtn) testBtn.style.display = 'none';
+                if (stopBtn) stopBtn.style.display = 'inline-block';
+                
+                document.getElementById('freqStatus').textContent = 'Requesting microphone...';
+                
+                // Get microphone access
+                testStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: false,
+                        noiseSuppression: false,
+                        autoGainControl: false
+                    } 
+                });
+                
+                console.log('Microphone access granted');
+                document.getElementById('freqStatus').textContent = 'Listening...';
+                
+                testContext = new (window.AudioContext || window.webkitAudioContext)();
+                testMicrophone = testContext.createMediaStreamSource(testStream);
+                
+                testAnalyser = testContext.createAnalyser();
+                testAnalyser.fftSize = 4096;
+                testAnalyser.smoothingTimeConstant = 0.8;
+                
+                const bufferLength = testAnalyser.frequencyBinCount;
+                testDataArray = new Uint8Array(bufferLength);
+                
+                testMicrophone.connect(testAnalyser);
+                
+                monitorFrequency();
+                
+            } catch (error) {
+                console.error('Frequency test error:', error);
+                document.getElementById('freqStatus').textContent = 'Error: ' + error.message;
+                
+                const testBtn = document.getElementById('testFreqBtn');
+                const stopBtn = document.getElementById('stopTestBtn');
+                
+                if (testBtn) testBtn.style.display = 'inline-block';
+                if (stopBtn) stopBtn.style.display = 'none';
+            }
+        }
+        
+        function monitorFrequency() {
+            if (!testAnalyser) return;
+            
+            testAnalyser.getByteFrequencyData(testDataArray);
+            
+            // Find peak frequency
+            let maxValue = 0;
+            let maxIndex = 0;
+            
+            const minBin = Math.floor(200 * testDataArray.length / (testContext.sampleRate / 2));
+            const maxBin = Math.floor(600 * testDataArray.length / (testContext.sampleRate / 2));
+            
+            for (let i = minBin; i < maxBin && i < testDataArray.length; i++) {
+                if (testDataArray[i] > maxValue) {
+                    maxValue = testDataArray[i];
+                    maxIndex = i;
+                }
+            }
+            
+            if (maxValue > 50) {
+                const nyquist = testContext.sampleRate / 2;
+                const frequency = (maxIndex * nyquist) / testDataArray.length;
+                
+                document.getElementById('freqDisplay').textContent = Math.round(frequency) + ' Hz';
+                
+                // Suggest flute type
+                let suggestion = '';
+                if (frequency >= 246 && frequency < 285) suggestion = 'C Medium';
+                else if (frequency >= 285 && frequency < 320) suggestion = 'D Medium';
+                else if (frequency >= 320 && frequency < 340) suggestion = 'E Medium';
+                else if (frequency >= 340 && frequency < 360) suggestion = 'F Medium';
+                else if (frequency >= 360 && frequency < 385) suggestion = 'F# Medium';
+                else if (frequency >= 385 && frequency < 427) suggestion = 'G Medium';
+                else if (frequency >= 427 && frequency < 453) suggestion = 'G# Medium';
+                else if (frequency >= 453 && frequency < 480) suggestion = 'A Medium';
+                
+                if (suggestion) {
+                    document.getElementById('freqStatus').textContent = `Suggested: ${suggestion} flute`;
+                } else {
+                    document.getElementById('freqStatus').textContent = 'Play Sa with all holes closed';
+                }
+            } else {
+                document.getElementById('freqDisplay').textContent = '--- Hz';
+                document.getElementById('freqStatus').textContent = 'Play louder...';
+            }
+            
+            testAnimationId = requestAnimationFrame(monitorFrequency);
+        }
+        
+        function stopFrequencyTest() {
+            console.log('Stopping frequency test...');
+            
+            if (testAnimationId) {
+                cancelAnimationFrame(testAnimationId);
+                testAnimationId = null;
+            }
+            
+            if (testMicrophone) {
+                testMicrophone.disconnect();
+                testMicrophone = null;
+            }
+            
+            if (testContext && testContext.state !== 'closed') {
+                testContext.close();
+                testContext = null;
+            }
+            
+            if (testStream) {
+                testStream.getTracks().forEach(track => track.stop());
+                testStream = null;
+            }
+            
+            const testBtn = document.getElementById('testFreqBtn');
+            const stopBtn = document.getElementById('stopTestBtn');
+            
+            if (testBtn) testBtn.style.display = 'inline-block';
+            if (stopBtn) stopBtn.style.display = 'none';
+            
+            document.getElementById('freqStatus').textContent = 'Test stopped';
+            document.getElementById('freqDisplay').textContent = '--- Hz';
+        }
+        
         function startLesson() {
             showAchievement('Sacred Beginning', 'Your journey with Krishna begins');
             nextStage();
