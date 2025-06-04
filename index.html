@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MuraliSeva - Your Sacred Journey with Krishna's Flute</title>
+    <title>MuraliSeva - Your Sacred Journey</title>
     <style>
         * {
             margin: 0;
@@ -16,640 +16,659 @@
             background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
             min-height: 100vh;
             color: #333;
-            overflow-x: hidden;
         }
         
         /* Header */
         .header {
-            background: linear-gradient(135deg, #FF8C00, #FFB74D);
+            background: #FF8C00;
             color: white;
-            padding: 30px 20px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .streak-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        /* Progress Bars Section */
+        .progress-section {
+            background: white;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .progress-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #666;
             text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .progress-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .progress-item {
+            background: #F5F5F5;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background: #E0E0E0;
+            border-radius: 10px;
+            overflow: hidden;
             position: relative;
         }
         
-        .header::before {
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="20">🎵</text></svg>') repeat;
-            opacity: 0.1;
-            animation: float 20s infinite linear;
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0) 0%, 
+                rgba(255,255,255,0.3) 50%, 
+                rgba(255,255,255,0) 100%);
+            animation: shimmer 2s infinite;
         }
         
-        @keyframes float {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100px); }
-        }
-        
-        .main-title {
-            font-size: 48px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            position: relative;
-        }
-        
-        .main-subtitle {
-            font-size: 20px;
-            opacity: 0.9;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        
-        .tagline {
-            font-size: 16px;
-            font-style: italic;
-            opacity: 0.8;
-            position: relative;
-        }
-        
-        /* Welcome Section */
-        .welcome-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            text-align: center;
-        }
-        
-        .welcome-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            margin: 30px 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .welcome-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,140,0,0.1), transparent);
-            animation: shine 3s infinite;
-        }
-        
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-        
-        .welcome-title {
-            font-size: 32px;
-            color: #FF8C00;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        
-        .welcome-text {
-            font-size: 18px;
-            line-height: 1.7;
-            color: #666;
-            margin-bottom: 30px;
-            position: relative;
-        }
-        
-        /* Journey Grid */
-        .journey-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-            padding: 0 20px;
-        }
-        
-        .journey-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .journey-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-        }
-        
-        .journey-card.lesson-available {
-            border: 3px solid #4CAF50;
-        }
-        
-        .journey-card.lesson-current {
-            border: 3px solid #FF8C00;
-            animation: glow 2s infinite alternate;
-        }
-        
-        @keyframes glow {
-            0% { box-shadow: 0 5px 20px rgba(255,140,0,0.3); }
-            100% { box-shadow: 0 5px 30px rgba(255,140,0,0.6); }
-        }
-        
-        .journey-card.lesson-locked {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        .journey-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-            display: block;
-        }
-        
-        .journey-title {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        
-        .journey-description {
-            font-size: 16px;
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        
-        .journey-progress {
-            background: #F5F5F5;
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .journey-badge {
-            display: inline-block;
-            background: #4CAF50;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
-        .journey-badge.current {
-            background: #FF8C00;
-        }
-        
-        .journey-badge.locked {
-            background: #999;
-        }
-        
-        /* Quick Actions */
-        .quick-actions {
-            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
-            border-radius: 20px;
-            padding: 30px;
-            margin: 40px 20px;
-            text-align: center;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .quick-actions-title {
-            font-size: 24px;
-            color: #1565C0;
-            margin-bottom: 20px;
-        }
-        
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        
-        /* Buttons */
-        .btn {
-            background: #FF8C00;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-            box-shadow: 0 3px 10px rgba(255, 140, 0, 0.3);
-        }
-        
-        .btn:hover {
-            background: #FF7700;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
-        }
-        
-        .btn-secondary {
-            background: #2196F3;
-            box-shadow: 0 3px 10px rgba(33, 150, 243, 0.3);
-        }
-        
-        .btn-secondary:hover {
-            background: #1976D2;
-            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
-        }
-        
-        .btn-success {
-            background: #4CAF50;
-            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
-        }
-        
-        .btn-success:hover {
-            background: #45A049;
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-        }
-        
-        .btn-practice {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
-        }
-        
-        .btn-practice:hover {
-            background: linear-gradient(135deg, #5a6fd8, #6a4190);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        
-        /* Progress Overview */
-        .progress-overview {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin: 40px 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .progress-title {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .progress-bars {
-            display: grid;
-            gap: 20px;
-        }
-        
-        .progress-item {
-            background: #F5F5F5;
-            border-radius: 10px;
-            padding: 20px;
-        }
-        
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-        
-        .progress-bar {
-            height: 12px;
-            background: #E0E0E0;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            border-radius: 6px;
-            transition: width 1s ease;
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         
         .musical-progress { background: linear-gradient(90deg, #4CAF50, #8BC34A); }
         .prana-progress { background: linear-gradient(90deg, #2196F3, #03A9F4); }
         .bhakti-progress { background: linear-gradient(90deg, #FF6B6B, #FF8E53); }
         
-        /* Footer */
-        .footer {
-            background: #333;
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-            margin-top: 60px;
+        /* Journey Map Section */
+        .journey-section {
+            margin: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
-        .footer-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .footer-quote {
-            font-size: 18px;
-            font-style: italic;
+        .journey-title {
+            font-size: 20px;
             margin-bottom: 20px;
-            opacity: 0.9;
+            text-align: center;
+            color: #FF8C00;
         }
         
-        .footer-attribution {
+        .journey-path {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            padding: 20px 0;
+            overflow-x: auto;
+        }
+        
+        .journey-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #E0E0E0;
+            z-index: 0;
+        }
+        
+        .journey-progress-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4CAF50, #FF8C00);
+            z-index: 1;
+            transition: width 0.5s ease;
+        }
+        
+        .journey-node {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .journey-node:hover {
+            transform: scale(1.1);
+        }
+        
+        .node-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .node-completed {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+        }
+        
+        .node-current {
+            border-color: #FF8C00;
+            background: #FFF3E0;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 140, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0); }
+        }
+        
+        .node-label {
+            font-size: 12px;
+            color: #666;
+            max-width: 80px;
+        }
+        
+        /* Lessons Grid */
+        .lessons-section {
+            margin: 20px;
+        }
+        
+        .chapter-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .chapter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chapter-title {
+            font-size: 20px;
+            color: #333;
+        }
+        
+        .chapter-progress {
             font-size: 14px;
-            opacity: 0.7;
+            color: #666;
         }
         
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .main-title {
-                font-size: 36px;
-            }
-            
-            .journey-grid {
-                grid-template-columns: 1fr;
-                padding: 0 10px;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .btn {
-                width: 100%;
-                max-width: 300px;
-                justify-content: center;
-            }
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .lesson-card {
+            background: #F5F5F5;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .lesson-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .lesson-completed {
+            background: #E8F5E9;
+            border: 2px solid #4CAF50;
+        }
+        
+        .lesson-current {
+            background: #FFF3E0;
+            border: 2px solid #FF8C00;
+        }
+        
+        .lesson-locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .lesson-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .lesson-name {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .lesson-notes {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .lesson-stars {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 12px;
+        }
+        
+        /* Daily Seva Section */
+        .seva-section {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            text-align: center;
+            z-index: 100;
+        }
+        
+        .seva-title {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #666;
+        }
+        
+        .seva-button {
+            background: #FF8C00;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .seva-button:hover {
+            background: #FF7700;
+            transform: scale(1.05);
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+            background: #45A049;
         }
     </style>
 </head>
 <body>
     <!-- Header -->
     <div class="header">
-        <h1 class="main-title">🎵 MuraliSeva 🎵</h1>
-        <p class="main-subtitle">Sacred Bansuri Practice with Krishna's Blessings</p>
-        <p class="tagline">"Every breath through the sacred bansuri is both a health practice AND an offering to Krishna"</p>
-    </div>
-
-    <!-- Welcome Section -->
-    <div class="welcome-section">
-        <div class="welcome-card">
-            <h2 class="welcome-title">Namaste, Devotee! 🙏</h2>
-            <p class="welcome-text">
-                Welcome to MuraliSeva - where ancient devotion meets modern wellness. Join thousands of devotees worldwide who are discovering the divine through Krishna's sacred flute, the bansuri.
-                <br><br>
-                Guided by the wisdom of Pandit Hari Prasad Chaurasia ji and validated by neuroscience, this is your journey to master breath, music, and bhakti in perfect harmony.
-            </p>
+        <h1>🎵 MuraliSeva</h1>
+        <div class="profile-section">
+            <div class="streak-badge">🔥 3 day streak</div>
+            <div>👤 Devotee</div>
         </div>
     </div>
-
-    <!-- Journey Grid -->
-    <div class="journey-grid">
-        <!-- Lesson 1 -->
-        <div class="journey-card lesson-current" onclick="startLesson(1)">
-            <div class="journey-icon">👶</div>
-            <h3 class="journey-title">Lesson 1: Krishna's First Breath</h3>
-            <p class="journey-description">
-                Begin your sacred journey by learning the fundamental note Sa, just as baby Krishna took His first divine breath in Gokul.
-            </p>
-            <div class="journey-progress">
-                <strong>Learn:</strong> Sa note, Basic breathing, Sacred connection
-            </div>
-            <span class="journey-badge current">🎯 Start Here</span>
-        </div>
-
-        <!-- Lesson 2 -->
-        <div class="journey-card lesson-locked">
-            <div class="journey-icon">😊</div>
-            <h3 class="journey-title">Lesson 2: Krishna's Second Smile</h3>
-            <p class="journey-description">
-                Discover the note Re and learn to play your first melody as Krishna's smile brings joy to Mother Yashoda.
-            </p>
-            <div class="journey-progress">
-                <strong>Learn:</strong> Re note, Sa-Re transitions, Longer breaths
-            </div>
-            <span class="journey-badge locked">🔒 Complete Lesson 1</span>
-        </div>
-
-        <!-- Free Practice -->
-        <div class="journey-card lesson-available" onclick="openPractice()">
-            <div class="journey-icon">🎯</div>
-            <h3 class="journey-title">Free Practice Mode</h3>
-            <p class="journey-description">
-                Practice any notes freely with real-time feedback. Perfect for warming up or exploring your musical expression.
-            </p>
-            <div class="journey-progress">
-                <strong>Features:</strong> All notes, Breath analysis, Progress tracking
-            </div>
-            <span class="journey-badge">⚡ Always Available</span>
-        </div>
-
-        <!-- Special Chapter -->
-        <div class="journey-card lesson-locked">
-            <div class="journey-icon">🌟</div>
-            <h3 class="journey-title">Tri-Swar Leela</h3>
-            <p class="journey-description">
-                Special advanced practice with Sa-Re-Ga combinations. Experience different rasas (emotions) through three sacred notes.
-            </p>
-            <div class="journey-progress">
-                <strong>Unlock:</strong> Complete first 3 lessons
-            </div>
-            <span class="journey-badge locked">✨ Special Chapter</span>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-        <h3 class="quick-actions-title">🚀 Quick Start Options</h3>
-        <div class="action-buttons">
-            <button class="btn btn-success" onclick="startLesson(1)">
-                <span>🎵</span> Begin Lesson 1
-            </button>
-            <button class="btn btn-practice" onclick="openPractice()">
-                <span>🎯</span> Free Practice
-            </button>
-            <button class="btn btn-secondary" onclick="showAbout()">
-                <span>ℹ️</span> About MuraliSeva
-            </button>
-        </div>
-    </div>
-
-    <!-- Progress Overview -->
-    <div class="progress-overview">
-        <h3 class="progress-title">🏆 Your Sacred Progress</h3>
-        <div class="progress-bars">
+    
+    <!-- Progress Section -->
+    <div class="progress-section">
+        <h2 class="progress-title">Your Tri-Guna Progress</h2>
+        <div class="progress-container">
             <div class="progress-item">
                 <div class="progress-label">
                     <span>🎵 Musical Mastery</span>
-                    <span id="musicalScore">0 / 100</span>
+                    <span>45/100</span>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill musical-progress" id="musicalBar" style="width: 0%;"></div>
+                    <div class="progress-fill musical-progress" style="width: 45%;"></div>
                 </div>
             </div>
             
             <div class="progress-item">
                 <div class="progress-label">
                     <span>🌬️ Prana Shakti</span>
-                    <span id="pranaScore">0 / 100</span>
+                    <span>38/100</span>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill prana-progress" id="pranaBar" style="width: 0%;"></div>
+                    <div class="progress-fill prana-progress" style="width: 38%;"></div>
                 </div>
             </div>
             
             <div class="progress-item">
                 <div class="progress-label">
                     <span>🙏 Bhakti Score</span>
-                    <span id="bhaktiScore">0 / 100</span>
+                    <span>52/100</span>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill bhakti-progress" id="bhaktiBar" style="width: 0%;"></div>
+                    <div class="progress-fill bhakti-progress" style="width: 52%;"></div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Footer -->
-    <div class="footer">
-        <div class="footer-content">
-            <p class="footer-quote">
-                "The flute of Krishna generates transcendental sound vibration. That sound is Krishna."
-            </p>
-            <p class="footer-attribution">
-                🙏 Guided by the wisdom of Pandit Hari Prasad Chaurasia ji<br>
-                ⚕️ Validated by neuroscience • 💝 Created with devotion
+    
+    <!-- Journey Map -->
+    <div class="journey-section">
+        <h2 class="journey-title">Your Journey Through Vrindavan</h2>
+        <div class="journey-path">
+            <div class="journey-line"></div>
+            <div class="journey-progress-line" style="width: 30%;"></div>
+            
+            <div class="journey-node">
+                <div class="node-circle node-completed">🏛️</div>
+                <div class="node-label">Gokul Start</div>
+            </div>
+            
+            <div class="journey-node">
+                <div class="node-circle node-current">🌸</div>
+                <div class="node-label">Yashoda's Garden</div>
+            </div>
+            
+            <div class="journey-node">
+                <div class="node-circle">🏔️</div>
+                <div class="node-label">Govardhan</div>
+            </div>
+            
+            <div class="journey-node">
+                <div class="node-circle">🌊</div>
+                <div class="node-label">Yamuna</div>
+            </div>
+            
+            <div class="journey-node">
+                <div class="node-circle">🦚</div>
+                <div class="node-label">Vrindavan</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lessons Section -->
+    <div class="lessons-section">
+        <!-- Chapter 1: Aarambh - Sacred Beginnings -->
+        <div class="chapter-container">
+            <div class="chapter-header">
+                <h3 class="chapter-title">Chapter 1: Aarambh - Sacred Beginnings</h3>
+                <span class="chapter-progress">0/6 Lessons</span>
+            </div>
+            
+            <div class="lessons-grid">
+                <div class="lesson-card lesson-current" onclick="startLesson(1)">
+                    <div class="lesson-number">1</div>
+                    <div class="lesson-name">Krishna's First Breath</div>
+                    <div class="lesson-notes">Sa</div>
+                </div>
+                
+                <div class="lesson-card lesson-locked" onclick="startLesson(2)">
+                    <div class="lesson-number">2</div>
+                    <div class="lesson-name">Krishna's Second Smile</div>
+                    <div class="lesson-notes">Sa-Re</div>
+                </div>
+                
+                <div class="lesson-card lesson-locked" onclick="startLesson(3)">
+                    <div class="lesson-number">3</div>
+                    <div class="lesson-name">The Three Jewels</div>
+                    <div class="lesson-notes">Sa-Re-Ga</div>
+                </div>
+                
+                <div class="lesson-card lesson-locked" onclick="startLesson(4)">
+                    <div class="lesson-number">4</div>
+                    <div class="lesson-name">The Peacock's Pride</div>
+                    <div class="lesson-notes">Ma</div>
+                </div>
+                
+                <div class="lesson-card lesson-locked">
+                    <div class="lesson-number">5</div>
+                    <div class="lesson-name">Calling Across Mountains</div>
+                    <div class="lesson-notes">Pa</div>
+                </div>
+                
+                <div class="lesson-card lesson-locked">
+                    <div class="lesson-number">1.5</div>
+                    <div class="lesson-name">Tri-Swar Leela</div>
+                    <div class="lesson-notes">Special</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chapter 2: Preview (Locked) -->
+        <div class="chapter-container" style="opacity: 0.5;">
+            <div class="chapter-header">
+                <h3 class="chapter-title">Chapter 2: Bala Bhumi - Playful Mastery</h3>
+                <span class="chapter-progress">Locked</span>
+            </div>
+            <p style="text-align: center; color: #999; padding: 20px;">
+                Complete Chapter 1 to unlock the playful world of childhood leelas...
             </p>
         </div>
     </div>
-
+    
+    <!-- Daily Seva Popup -->
+    <div class="seva-section">
+        <div class="seva-title">Today's Seva</div>
+        <button class="seva-button" onclick="startDailySeva()">
+            🎵 5 min practice
+        </button>
+    </div>
+    
+    <!-- Practice Mode FAB -->
+    <div class="fab" onclick="openPracticeMode()">
+        🎯
+    </div>
+    
     <script>
-        // User progress data
-        let userProgress = {
-            musical: 0,
-            prana: 0,
-            bhakti: 0,
+        // Initialize or get user progress
+        let userProgress = JSON.parse(localStorage.getItem('muraliSevaProgress')) || {
+            currentLesson: 1,
             completedLessons: [],
-            currentLesson: 1
+            musicalMastery: 0,
+            pranaShakti: 0,
+            bhaktiScore: 0,
+            streak: 0,
+            lastPractice: null
         };
-
-        // Safe localStorage functions
-        function safeLocalStorageGet(key) {
-            try {
-                return localStorage.getItem(key);
-            } catch (e) {
-                return null;
+        
+        // Update UI based on saved progress
+        function updateProgressUI() {
+            // Update progress bars
+            if (userProgress.musicalMastery > 0) {
+                document.querySelector('.musical-progress').style.width = userProgress.musicalMastery + '%';
+                document.querySelector('.musical-progress').parentElement.previousElementSibling.children[1].textContent = 
+                    userProgress.musicalMastery + '/100';
+            }
+            
+            if (userProgress.pranaShakti > 0) {
+                document.querySelector('.prana-progress').style.width = userProgress.pranaShakti + '%';
+                document.querySelector('.prana-progress').parentElement.previousElementSibling.children[1].textContent = 
+                    userProgress.pranaShakti + '/100';
+            }
+            
+            if (userProgress.bhaktiScore > 0) {
+                document.querySelector('.bhakti-progress').style.width = userProgress.bhaktiScore + '%';
+                document.querySelector('.bhakti-progress').parentElement.previousElementSibling.children[1].textContent = 
+                    userProgress.bhaktiScore + '/100';
+            }
+            
+            // Update lesson cards
+            const lessonCards = document.querySelectorAll('.lesson-card');
+            userProgress.completedLessons.forEach(lessonNum => {
+                if (lessonCards[lessonNum - 1]) {
+                    lessonCards[lessonNum - 1].classList.remove('lesson-current', 'lesson-locked');
+                    lessonCards[lessonNum - 1].classList.add('lesson-completed');
+                    
+                    // Add stars for completed lessons
+                    const stars = document.createElement('div');
+                    stars.className = 'lesson-stars';
+                    stars.textContent = '⭐⭐⭐';
+                    lessonCards[lessonNum - 1].appendChild(stars);
+                }
+            });
+            
+            // Update current lesson
+            if (userProgress.currentLesson <= 6 && lessonCards[userProgress.currentLesson - 1]) {
+                lessonCards[userProgress.currentLesson - 1].classList.remove('lesson-locked');
+                lessonCards[userProgress.currentLesson - 1].classList.add('lesson-current');
+            }
+            
+            // Update chapter progress
+            document.querySelector('.chapter-progress').textContent = 
+                `${userProgress.completedLessons.length}/6 Lessons`;
+            
+            // Update journey progress
+            const progressPercent = (userProgress.completedLessons.length / 5) * 100;
+            document.querySelector('.journey-progress-line').style.width = progressPercent + '%';
+            
+            // Update streak
+            if (userProgress.streak > 0) {
+                document.querySelector('.streak-badge').textContent = `🔥 ${userProgress.streak} day streak`;
             }
         }
         
-        function safeLocalStorageSet(key, value) {
-            try {
-                localStorage.setItem(key, value);
-            } catch (e) {
-                console.log('Progress saved in memory only');
-            }
-        }
-
-        // Load user progress
-        function loadProgress() {
-            const saved = safeLocalStorageGet('muraliSevaProgress');
-            if (saved) {
-                try {
-                    userProgress = JSON.parse(saved);
-                    updateProgressDisplay();
-                } catch (e) {
-                    console.log('Could not load saved progress');
-                }
-            }
-        }
-
-        // Update progress display
-        function updateProgressDisplay() {
-            document.getElementById('musicalScore').textContent = `${userProgress.musical} / 100`;
-            document.getElementById('pranaScore').textContent = `${userProgress.prana} / 100`;
-            document.getElementById('bhaktiScore').textContent = `${userProgress.bhakti} / 100`;
-            
-            document.getElementById('musicalBar').style.width = `${userProgress.musical}%`;
-            document.getElementById('pranaBar').style.width = `${userProgress.prana}%`;
-            document.getElementById('bhaktiBar').style.width = `${userProgress.bhakti}%`;
-        }
-
-        // Navigation functions
         function startLesson(lessonNumber) {
-            if (lessonNumber === 1) {
-                // Navigate to lesson 1
-                window.location.href = 'lesson1.html';
+            // Check if lesson is available
+            if (lessonNumber === 1 || userProgress.completedLessons.includes(lessonNumber - 1)) {
+                // Navigate to lesson
+                window.location.href = `lesson${lessonNumber}.html`;
             } else {
                 alert('Complete previous lessons first! 🙏');
             }
         }
-
-        function openPractice() {
-            // Navigate to practice mode
-            window.location.href = 'practice.html';
+        
+        function startDailySeva() {
+            // Quick practice mode with current lesson
+            startLesson(userProgress.currentLesson);
         }
-
-        function showAbout() {
-            alert(`🎵 About MuraliSeva 🎵
-
-A revolutionary platform combining:
-• Krishna Bhakti (Devotion)
-• Bansuri Practice (Sacred Flute)
-• Pranayama (Breath Control)
-• Modern Technology & Neuroscience
-
-Created with guidance from Pandit Hari Prasad Chaurasia ji's wisdom and validated by neuroscience research.
-
-Every breath through the sacred bansuri is both a health practice AND an offering to Krishna.
-
-🙏 Begin your sacred journey today!`);
+        
+        function openPracticeMode() {
+            // Free practice mode - open the tuner
+            window.location.href = 'practice-tuner.html';
         }
-
-        // Initialize on load
-        window.addEventListener('load', () => {
-            loadProgress();
+        
+        // Check if returning from completed lesson
+        function checkLessonCompletion() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const completedLesson = urlParams.get('completed');
             
-            // Add entrance animations
-            const cards = document.querySelectorAll('.journey-card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    card.style.transition = 'all 0.5s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 200);
-            });
-
-            // Animate progress bars
-            setTimeout(() => {
-                updateProgressDisplay();
-            }, 1000);
-        });
-
-        // Daily practice reminder
-        function checkDailyPractice() {
-            const lastPractice = safeLocalStorageGet('lastPracticeDate');
-            const today = new Date().toDateString();
-            
-            if (lastPractice !== today) {
-                setTimeout(() => {
-                    if (confirm('🎵 Ready for your daily bansuri practice?\n\nConsistent practice deepens your connection with Krishna!')) {
-                        startLesson(1);
+            if (completedLesson) {
+                const lessonNum = parseInt(completedLesson);
+                if (!userProgress.completedLessons.includes(lessonNum)) {
+                    userProgress.completedLessons.push(lessonNum);
+                    userProgress.currentLesson = Math.min(lessonNum + 1, 6);
+                    
+                    // Update scores
+                    userProgress.musicalMastery = Math.min(100, userProgress.musicalMastery + 15);
+                    userProgress.pranaShakti = Math.min(100, userProgress.pranaShakti + 10);
+                    userProgress.bhaktiScore = Math.min(100, userProgress.bhaktiScore + 20);
+                    
+                    // Update streak
+                    const today = new Date().toDateString();
+                    const lastPractice = userProgress.lastPractice ? new Date(userProgress.lastPractice).toDateString() : null;
+                    
+                    if (lastPractice !== today) {
+                        const yesterday = new Date();
+                        yesterday.setDate(yesterday.getDate() - 1);
+                        
+                        if (lastPractice === yesterday.toDateString()) {
+                            userProgress.streak++;
+                        } else {
+                            userProgress.streak = 1;
+                        }
+                        
+                        userProgress.lastPractice = new Date().toISOString();
                     }
-                }, 5000);
+                    
+                    // Save progress
+                    localStorage.setItem('muraliSevaProgress', JSON.stringify(userProgress));
+                    
+                    // Show achievement
+                    alert(`🎉 Lesson ${lessonNum} completed! Your scores have increased!`);
+                    
+                    // Clean URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
             }
         }
-
-        // Start daily practice check
-        checkDailyPractice();
+        
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            checkLessonCompletion();
+            updateProgressUI();
+            
+            // Animate progress bars
+            document.querySelectorAll('.progress-fill').forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            });
+        });
     </script>
 </body>
 </html>
