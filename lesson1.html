@@ -596,33 +596,33 @@
         <h2>🎵 Calibrate Your Bansuri</h2>
         <p>Select your flute type or let us auto-detect:</p>
         
-        <button class="button" onclick="autoDetectFlute()">🎤 Auto-Detect My Flute</button>
+        <button class="button" onclick="autoDetectFlute(this)">🎤 Auto-Detect My Flute</button>
         
         <div style="margin: 20px 0;">
             <h3>Or choose manually:</h3>
-            <button class="flute-option" onclick="selectFlute('C', 261, 277)">
+            <div class="flute-option" onclick="selectFlute('C', 261, 277)">
                 <strong>C Medium</strong> - Sa at 261-277 Hz<br>
                 <small>Most common for beginners</small>
-            </button>
-            <button class="flute-option" onclick="selectFlute('D', 294, 311)">
+            </div>
+            <div class="flute-option" onclick="selectFlute('D', 294, 311)">
                 <strong>D Medium</strong> - Sa at 294-311 Hz
-            </button>
-            <button class="flute-option" onclick="selectFlute('E', 330, 349)">
+            </div>
+            <div class="flute-option" onclick="selectFlute('E', 330, 349)">
                 <strong>E Medium</strong> - Sa at 330-349 Hz
-            </button>
-            <button class="flute-option" onclick="selectFlute('F', 349, 370)">
+            </div>
+            <div class="flute-option" onclick="selectFlute('F', 349, 370)">
                 <strong>F Medium</strong> - Sa at 349-370 Hz
-            </button>
-            <button class="flute-option" onclick="selectFlute('F#', 370, 392)">
+            </div>
+            <div class="flute-option" onclick="selectFlute('F#', 370, 392)">
                 <strong>F# Medium</strong> - Sa at 370-392 Hz
-            </button>
-            <button class="flute-option" onclick="selectFlute('G', 392, 415)">
+            </div>
+            <div class="flute-option" onclick="selectFlute('G', 392, 415)">
                 <strong>G Medium</strong> - Sa at 392-415 Hz<br>
                 <small>Your flute seems to be around here</small>
-            </button>
-            <button class="flute-option" onclick="selectFlute('A', 440, 466)">
+            </div>
+            <div class="flute-option" onclick="selectFlute('A', 440, 466)">
                 <strong>A Medium</strong> - Sa at 440-466 Hz
-            </button>
+            </div>
         </div>
         
         <div id="detectionResult" style="display:none; margin: 20px 0; padding: 15px; background: #E8F5E9; border-radius: 8px;">
