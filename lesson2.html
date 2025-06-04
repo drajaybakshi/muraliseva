@@ -789,6 +789,9 @@
         let patternStartTime = null;
         let lastNoteTime = null;
         let transitionTimes = [];
+        let lastDetectedNote = null;
+        let transitionCount = 0;
+        let smoothTransitions = 0;
         
         // Breath analysis
         let frequencyHistory = [];
@@ -1093,6 +1096,8 @@
         }
         
         function checkNote(frequency) {
+            const currentNote = getNoteName(frequency);
+            
             // Check Re mastery
             if (frequency >= RE_MIN_FREQ && frequency <= RE_MAX_FREQ) {
                 if (!lastNoteTime || Date.now() - lastNoteTime > 500) {
@@ -1107,6 +1112,31 @@
                 lastNoteTime = Date.now();
             }
             
+            // Track transitions between Sa and Re
+            if (currentNote === 'Sa' || currentNote === 'Re') {
+                if (lastDetectedNote && lastDetectedNote !== currentNote) {
+                    // We have a transition!
+                    transitionCount++;
+                    
+                    if (lastNoteTime) {
+                        const transitionTime = Date.now() - lastNoteTime;
+                        transitionTimes.push(transitionTime);
+                        
+                        // A smooth transition is between 200ms and 800ms
+                        if (transitionTime >= 200 && transitionTime <= 800) {
+                            smoothTransitions++;
+                        }
+                        
+                        // Update transition score immediately
+                        const smoothnessPercent = (smoothTransitions / transitionCount) * 100;
+                        document.getElementById('transitionScore').textContent = Math.round(smoothnessPercent) + '%';
+                    }
+                    
+                    lastNoteTime = Date.now();
+                }
+                lastDetectedNote = currentNote;
+            }
+            
             // Pattern tracking
             if (practiceMode === 'pattern') {
                 const expectedNote = currentPattern[patternIndex];
@@ -1114,14 +1144,6 @@
                                  (expectedNote === 'Re' && frequency >= RE_MIN_FREQ && frequency <= RE_MAX_FREQ);
                 
                 if (isCorrect) {
-                    if (!patternStartTime) {
-                        patternStartTime = Date.now();
-                    } else {
-                        // Track transition time
-                        transitionTimes.push(Date.now() - patternStartTime);
-                        patternStartTime = Date.now();
-                    }
-                    
                     patternIndex++;
                     updatePatternDisplay();
                     
@@ -1172,10 +1194,9 @@
             }
             
             // Calculate transition smoothness
-            if (transitionTimes.length > 0) {
-                const avgTransition = transitionTimes.reduce((a, b) => a + b) / transitionTimes.length;
-                const transitionScore = Math.max(0, 100 - Math.abs(avgTransition - 1000) / 10);
-                document.getElementById('transitionScore').textContent = Math.round(transitionScore) + '%';
+            if (transitionCount > 0) {
+                const smoothnessPercent = (smoothTransitions / transitionCount) * 100;
+                document.getElementById('transitionScore').textContent = Math.round(smoothnessPercent) + '%';
             }
             
             // Update breath visualization
@@ -1199,15 +1220,17 @@
             }
             
             // Requirement 3: Smooth transitions
-            if (transitionTimes.length >= 3) {
-                const avgTransition = transitionTimes.reduce((a, b) => a + b) / transitionTimes.length;
-                if (avgTransition >= 800 && avgTransition <= 1200) {
+            if (transitionCount >= 4) {
+                const smoothnessPercent = (smoothTransitions / transitionCount) * 100;
+                if (smoothnessPercent >= 60) {
                     document.getElementById('req3').textContent = '✓';
                     document.getElementById('req3').classList.add('completed');
-                    document.getElementById('req3Status').textContent = '(Smooth!)';
+                    document.getElementById('req3Status').textContent = `(${Math.round(smoothnessPercent)}% smooth!)`;
                 } else {
-                    document.getElementById('req3Status').textContent = '(Keep practicing)';
+                    document.getElementById('req3Status').textContent = `(${Math.round(smoothnessPercent)}% smooth)`;
                 }
+            } else {
+                document.getElementById('req3Status').textContent = `(${transitionCount}/4 transitions)`;
             }
             
             // Requirement 4: 8-count breath
@@ -1220,7 +1243,8 @@
             }
             
             // Check completion
-            if (correctReCount >= 3 && patternCompletions >= 2 && longestBreath >= 8 && !hasCompletedRequirements) {
+            const hasSmoothtransitions = transitionCount >= 4 && (smoothTransitions / transitionCount) >= 0.6;
+            if (correctReCount >= 3 && patternCompletions >= 2 && longestBreath >= 8 && hasSmoothtransitions && !hasCompletedRequirements) {
                 hasCompletedRequirements = true;
                 document.getElementById('continueBtn').style.display = 'inline-block';
                 showAchievement('Lesson Complete!', 'Krishna dances with joy!');
