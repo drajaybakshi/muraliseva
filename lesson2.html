@@ -1,4 +1,13 @@
-<!DOCTYPE html>
+<p style="color: #666; margin-top: 10px;">
+                    💡 <strong>Transition Tips:</strong><br>
+                    • Lift your finger smoothly, like a feather floating up<br>
+                    • Don't rush - take 0.5-1 second to change notes<br>
+                    • Keep steady breath flow during the transition<br>
+                    • Practice "Sa... Re..." with a natural pause
+                </p>        .error {
+            color: #F44336;
+            margin: 20px 0;
+        }<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -410,9 +419,25 @@
             font-size: 14px;
         }
         
-        .error {
-            color: #F44336;
-            margin: 20px 0;
+        /* Quick tip popup */
+        .quick-tip {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 150, 243, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 500;
+            pointer-events: none;
+        }
+        
+        .quick-tip.show {
+            opacity: 1;
         }
         
         /* Calibration modal */
@@ -749,6 +774,9 @@
         <button class="button" onclick="closeCalibration()" style="background: #666;">Cancel</button>
     </div>
     
+    <!-- Quick Tip Popup -->
+    <div id="quickTip" class="quick-tip"></div>
+    
     <!-- Achievement Popup -->
     <div id="achievement" class="achievement">
         <div class="achievement-icon">🏆</div>
@@ -766,15 +794,15 @@
         let dataArray;
         let animationId;
         
-        // Default to G Medium (Dr. Bakshi's flute)
-        let SA_MIN_FREQ = 392;
-        let SA_MAX_FREQ = 415;
-        let SA_CENTER_FREQ = 403;
+        // Default to G Medium (Dr. Bakshi's flute) - adjusted for actual readings
+        let SA_MIN_FREQ = 380;  // Lowered from 392
+        let SA_MAX_FREQ = 410;  // Slightly lowered from 415
+        let SA_CENTER_FREQ = 395;
         
         // Re is a whole tone (200 cents) above Sa
-        let RE_MIN_FREQ = 440;
-        let RE_MAX_FREQ = 466;
-        let RE_CENTER_FREQ = 453;
+        let RE_MIN_FREQ = 427;  // Adjusted accordingly
+        let RE_MAX_FREQ = 460;  // Adjusted accordingly
+        let RE_CENTER_FREQ = 443;
         
         // Progress tracking
         let correctReCount = 0;
@@ -1122,9 +1150,18 @@
                         const transitionTime = Date.now() - lastNoteTime;
                         transitionTimes.push(transitionTime);
                         
-                        // A smooth transition is between 200ms and 800ms
-                        if (transitionTime >= 200 && transitionTime <= 800) {
+                        // A smooth transition is between 300ms and 1500ms (more forgiving for beginners)
+                        if (transitionTime >= 300 && transitionTime <= 1500) {
                             smoothTransitions++;
+                        }
+                        
+                        // Provide helpful feedback
+                        if (transitionTime < 300) {
+                            showQuickTip('Too fast! Lift your finger more gently 🦋');
+                        } else if (transitionTime > 1500) {
+                            showQuickTip('Too slow! Try a smoother finger motion 🌊');
+                        } else {
+                            showQuickTip('Perfect transition! 🎵');
                         }
                         
                         // Update transition score immediately
@@ -1249,6 +1286,16 @@
                 document.getElementById('continueBtn').style.display = 'inline-block';
                 showAchievement('Lesson Complete!', 'Krishna dances with joy!');
             }
+        }
+        
+        function showQuickTip(message) {
+            const tip = document.getElementById('quickTip');
+            tip.textContent = message;
+            tip.classList.add('show');
+            
+            setTimeout(() => {
+                tip.classList.remove('show');
+            }, 2000);
         }
         
         function showAchievement(title, description) {
