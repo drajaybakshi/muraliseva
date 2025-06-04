@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MuraliSeva - Lesson 2: Krishna's Second Smile</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #FFFFF8;
+            color: #333333;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #FF8C00;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        
+        /* Lesson stages */
+        .lesson-stage {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .lesson-stage.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Story box */
+        .story-box {
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+            border: 2px solid #FF8C00;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #664400;
+        }
+        
+        .krishna-icon {
+            font-size: 60px;
+            margin: 20px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Status box */
+        .status-box {
+            background: #F5F5F5;
+            border: 2px solid #CCCCCC;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        /* Buttons */
+        .button {
+            background-color: #FF8C00;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .button:disabled {
+            background-color: #CCCCCC;
+            cursor: not-allowed;
+        }
+        
+        .button:hover:not(:disabled) {
+            background-color: #FF7700;
+            transform: scale(1.05);
+        }
+        
+        .button.secondary {
+            background-color: #666;
+            font-size: 14px;
+            padding: 8px 15px;
+        }
+        
+        .button.success {
+            background-color: #4CAF50;
+        }
+        
+        /* Note selection buttons */
+        .note-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .note-btn {
+            background: #F5F5F5;
+            border: 2px solid #DDD;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .note-btn.active {
+            background: #FF8C00;
+            color: white;
+            border-color: #FF8C00;
+        }
+        
+        .note-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Musical staff display */
+        .staff-container {
+            background: white;
+            border: 2px solid #CCCCCC;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 120px;
+            position: relative;
+        }
+        
+        /* Pitch indicator */
+        .pitch-indicator {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pitch-correct {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .pitch-close {
+            background-color: #FFEB3B;
+            color: #333;
+        }
+        
+        .pitch-wrong {
+            background-color: #F44336;
+            color: white;
+        }
+        
+        /* Pattern display */
+        .pattern-display {
+            background: #E3F2FD;
+            border: 2px solid #2196F3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1976D2;
+        }
+        
+        .pattern-note {
+            display: inline-block;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .pattern-note.current {
+            color: #FF8C00;
+            transform: scale(1.3);
+        }
+        
+        /* Breath Analysis Section */
+        .breath-analysis {
+            background: #E8F5E9;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .breath-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .metric-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .metric-indicator {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .good { color: #4CAF50; }
+        .medium { color: #FF9800; }
+        .poor { color: #F44336; }
+        
+        /* Breath visualization */
+        .breath-viz {
+            background: white;
+            border: 2px solid #CCCCCC;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            height: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .breath-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(76, 175, 80, 0.3), transparent);
+            transform-origin: bottom;
+            transition: transform 0.1s ease;
+        }
+        
+        /* Fingering chart */
+        .fingering-display {
+            background: #F5F5F5;
+            border: 2px solid #CCCCCC;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .holes-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .hole {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            transition: all 0.3s ease;
+        }
+        
+        .hole-closed {
+            background-color: #333;
+        }
+        
+        .hole-open {
+            background-color: white;
+        }
+        
+        .frequency-display {
+            font-size: 18px;
+            color: #666;
+            margin: 10px 0;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 2px 10px;
+            border-radius: 4px;
+        }
+        
+        /* Progress indicator */
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #DDD;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: #FF8C00;
+            transform: scale(1.2);
+        }
+        
+        .dot.completed {
+            background: #4CAF50;
+        }
+        
+        /* Requirements checklist */
+        .requirements {
+            background: white;
+            border: 2px solid #DDD;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        
+        .requirement-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .requirement-check.completed {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        /* Achievement popup */
+        .achievement {
+            position: fixed;
+            top: 20px;
+            right: -400px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transition: right 0.5s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .achievement.show {
+            right: 20px;
+        }
+        
+        .achievement-icon {
+            font-size: 40px;
+        }
+        
+        .achievement-text h3 {
+            margin: 0 0 5px 0;
+            color: #FF8C00;
+        }
+        
+        .achievement-text p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .error {
+            color: #F44336;
+            margin: 20px 0;
+        }
+        
+        /* Calibration modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        
+        .calibration-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-overlay.show,
+        .calibration-modal.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Stage 1: Introduction -->
+        <div id="stage1" class="lesson-stage active">
+            <h1>🎵 Lesson 2: Krishna's Second Smile 🎵</h1>
+            <h2>Discovering the dance between two notes</h2>
+            
+            <div class="story-box">
+                <div class="krishna-icon">😊</div>
+                <p>Baby Krishna has learned to smile!<br>
+                When He sees Mother Yashoda, His voice lifts with joy.<br>
+                Today, you'll discover how Sa becomes Re,<br>
+                creating the first conversation of love.</p>
+            </div>
+            
+            <button class="button" onclick="startLesson()">Begin the Journey</button>
+            
+            <div class="progress-dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+        
+        <!-- Stage 2: Warm-up -->
+        <div id="stage2" class="lesson-stage">
+            <h1>🌅 Morning Warm-up</h1>
+            <h2>First, let's remember Sa</h2>
+            
+            <div class="story-box">
+                <p>Just as Krishna wakes each morning with His familiar sounds,<br>
+                let's warm up with the Sa you mastered yesterday.</p>
+            </div>
+            
+            <button class="button secondary" onclick="playReferenceNote('sa')">🔊 Play Sa</button>
+            
+            <div class="fingering-display">
+                <h4>Sa - All Holes Closed</h4>
+                <div class="holes-container">
+                    <div class="hole hole-closed"></div>
+                    <div class="hole hole-closed"></div>
+                    <div class="hole hole-closed"></div>
+                    <div class="hole hole-closed"></div>
+                    <div class="hole hole-closed"></div>
+                    <div class="hole hole-closed"></div>
+                </div>
+                <p>Play Sa three times to warm up</p>
+            </div>
+            
+            <button class="button" onclick="nextStage()">I'm Warmed Up</button>
+            
+            <div class="progress-dots">
+                <div class="dot completed"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+        
+        <!-- Stage 3: Finding Re -->
+        <div id="stage3" class="lesson-stage">
+            <h1>🌟 Discovering Re</h1>
+            <h2>The second note - Krishna's smile</h2>
+            
+            <div class="story-box">
+                <p>When baby Krishna lifts His voice in joy,<br>
+                it's like lifting one finger from your flute.<br>
+                This creates Re - the note of happiness!</p>
+            </div>
+            
+            <div class="fingering-display">
+                <h4>Re - Lift Your Right Ring Finger (6th hole open)</h4>
+                <div class="holes-container">
+                    <div class="hole hole-closed"></div>
+                    <div class="hole hole-closed"></div>
+                    <div class="hole hole-closed"></div>
+                    <div class="hole hole-closed"></div>
+                    <div class="hole hole-closed"></div>
+                    <div class="hole hole-open"></div>
+                </div>
+                <p>⬆️ Mouth side | Body side ⬇️</p>
+                <p style="color: #FF8C00; font-weight: bold;">Lift your ring finger gently - like a butterfly taking flight</p>
+            </div>
+            
+            <button class="button secondary" onclick="playReferenceNote('re')">🔊 Play Re</button>
+            <button class="button secondary" onclick="showCalibration()">🎵 Adjust Calibration</button>
+            
+            <button class="button" onclick="nextStage()">Ready to Practice</button>
+            
+            <div class="progress-dots">
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+        
+        <!-- Stage 4: Practice Sa-Re -->
+        <div id="stage4" class="lesson-stage">
+            <h1>🎼 The Dance of Sa-Re</h1>
+            <h2 id="targetRange">Practice alternating between Sa and Re</h2>
+            
+            <div class="note-selector">
+                <button class="note-btn active" onclick="selectTargetNote('sa')">Sa</button>
+                <button class="note-btn" onclick="selectTargetNote('re')">Re</button>
+                <button class="note-btn" onclick="selectTargetNote('pattern')">Sa-Re Pattern</button>
+            </div>
+            
+            <div class="pattern-display" id="patternDisplay" style="display: none;">
+                <span class="pattern-note">Sa</span>→
+                <span class="pattern-note">Re</span>→
+                <span class="pattern-note">Sa</span>→
+                <span class="pattern-note">Re</span>
+            </div>
+            
+            <div class="status-box">
+                <p id="practiceInstruction">First, practice each note separately</p>
+                <button class="button secondary" id="playRefBtn" onclick="playCurrentReference()">🔊 Play Reference</button>
+            </div>
+            
+            <button id="startButton" class="button" onclick="startMicrophone()">
+                Start Practice
+            </button>
+            
+            <button id="stopButton" class="button" onclick="stopMicrophone()" disabled>
+                Stop Practice
+            </button>
+            
+            <!-- Musical Staff Display -->
+            <div class="staff-container">
+                <div id="pitchIndicator" class="pitch-indicator">🎵</div>
+                <div class="frequency-display" id="frequencyDisplay">Ready to listen...</div>
+            </div>
+            
+            <!-- Requirements -->
+            <div class="requirements">
+                <h3>Complete these to proceed:</h3>
+                <div class="requirement-item">
+                    <div id="req1" class="requirement-check">⚪</div>
+                    <span>Play clear Re 3 times</span>
+                    <span id="req1Count">(0/3)</span>
+                </div>
+                <div class="requirement-item">
+                    <div id="req2" class="requirement-check">⚪</div>
+                    <span>Complete Sa-Re-Sa-Re pattern twice</span>
+                    <span id="req2Count">(0/2)</span>
+                </div>
+                <div class="requirement-item">
+                    <div id="req3" class="requirement-check">⚪</div>
+                    <span>Achieve smooth transitions</span>
+                    <span id="req3Status">(--)</span>
+                </div>
+                <div class="requirement-item">
+                    <div id="req4" class="requirement-check">⚪</div>
+                    <span>Hold 8-count breath with both notes</span>
+                    <span id="req4Status">(--)</span>
+                </div>
+            </div>
+            
+            <!-- Breath Analysis -->
+            <div class="breath-analysis">
+                <h3>🌬️ Breath Analysis</h3>
+                
+                <div class="breath-metrics">
+                    <div class="metric-box">
+                        <div class="metric-label">Stability</div>
+                        <div class="metric-value" id="stabilityScore">--</div>
+                        <div class="metric-indicator" id="stabilityIndicator">Pitch steadiness</div>
+                    </div>
+                    
+                    <div class="metric-box">
+                        <div class="metric-label">Transition</div>
+                        <div class="metric-value" id="transitionScore">--</div>
+                        <div class="metric-indicator">Sa↔Re smoothness</div>
+                    </div>
+                    
+                    <div class="metric-box">
+                        <div class="metric-label">Current Note</div>
+                        <div class="metric-value" id="currentNote">--</div>
+                        <div class="metric-indicator">Detected pitch</div>
+                    </div>
+                    
+                    <div class="metric-box">
+                        <div class="metric-label">Breath Length</div>
+                        <div class="metric-value" id="breathLength">0s</div>
+                        <div class="metric-indicator">Current exhale</div>
+                    </div>
+                </div>
+                
+                <div class="breath-viz">
+                    <div id="breathWave" class="breath-wave"></div>
+                </div>
+            </div>
+            
+            <button class="button success" onclick="nextStage()" style="display:none;" id="continueBtn">
+                Wonderful! Continue →
+            </button>
+            
+            <div id="errorMessage" class="error"></div>
+            
+            <div class="progress-dots">
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+        
+        <!-- Stage 5: Completion -->
+        <div id="stage5" class="lesson-stage">
+            <h1>🎊 Krishna's Joy!</h1>
+            <h2>You've learned the language of love</h2>
+            
+            <div class="story-box">
+                <div class="krishna-icon">🙏</div>
+                <p>Wonderful! You've discovered how Sa and Re dance together.<br>
+                In the Bhagavata Purana, it says that when Krishna first<br>
+                alternated between two sounds, Yashoda knew:<br>
+                "My child speaks the language of the universe!"<br><br>
+                Your practice has created this same divine conversation.</p>
+            </div>
+            
+            <div class="requirements">
+                <h3>Your Achievements:</h3>
+                <div class="requirement-item">
+                    <div class="requirement-check completed">✓</div>
+                    <span>🎵 Musical: Sa and Re mastered</span>
+                </div>
+                <div class="requirement-item">
+                    <div class="requirement-check completed">✓</div>
+                    <span>🌬️ Prana: 8-count breath achieved</span>
+                </div>
+                <div class="requirement-item">
+                    <div class="requirement-check completed">✓</div>
+                    <span>🙏 Bhakti: Mother-child love expressed</span>
+                </div>
+            </div>
+            
+            <p style="color: #666; margin: 20px 0;">
+                💡 Practice tip: Play Sa-Re-Sa-Re daily to strengthen your foundation
+            </p>
+            
+            <button class="button" onclick="returnToDashboard()">Return to Dashboard</button>
+            <button class="button secondary" onclick="practiceMore()">Practice More</button>
+            
+            <div class="progress-dots">
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Calibration Modal (same as lesson 1) -->
+    <div class="modal-overlay" onclick="closeCalibration()"></div>
+    <div class="calibration-modal">
+        <h2>🎵 Calibrate Your Bansuri</h2>
+        <p>Select your flute type to set the correct frequencies:</p>
+        
+        <button class="button secondary" onclick="selectFlute('C', 261, 277)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px;">
+            <strong>C Medium</strong> - Sa at 261-277 Hz<br>
+            <small>Most common for beginners</small>
+        </button>
+        
+        <button class="button secondary" onclick="selectFlute('D', 294, 311)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px;">
+            <strong>D Medium</strong> - Sa at 294-311 Hz
+        </button>
+        
+        <button class="button secondary" onclick="selectFlute('E', 330, 349)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px;">
+            <strong>E Medium</strong> - Sa at 330-349 Hz
+        </button>
+        
+        <button class="button secondary" onclick="selectFlute('F', 349, 370)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px;">
+            <strong>F Medium</strong> - Sa at 349-370 Hz
+        </button>
+        
+        <button class="button secondary" onclick="selectFlute('F#', 370, 392)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px;">
+            <strong>F# Medium</strong> - Sa at 370-392 Hz
+        </button>
+        
+        <button class="button secondary" onclick="selectFlute('G', 392, 415)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px; border: 2px solid #FF8C00;">
+            <strong>G Medium</strong> - Sa at 392-415 Hz<br>
+            <small style="color: #FF8C00;">Dr. Bakshi's flute</small>
+        </button>
+        
+        <button class="button secondary" onclick="selectFlute('A', 440, 466)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px;">
+            <strong>A Medium</strong> - Sa at 440-466 Hz
+        </button>
+        
+        <button class="button" onclick="closeCalibration()" style="background: #666;">Cancel</button>
+    </div>
+    
+    <!-- Achievement Popup -->
+    <div id="achievement" class="achievement">
+        <div class="achievement-icon">🏆</div>
+        <div class="achievement-text">
+            <h3 id="achievementTitle">Achievement!</h3>
+            <p id="achievementDesc">Description</p>
+        </div>
+    </div>
+    
+    <script>
+        // Audio context and analysis variables
+        let audioContext;
+        let microphone;
+        let analyser;
+        let dataArray;
+        let animationId;
+        
+        // Default to G Medium (Dr. Bakshi's flute)
+        let SA_MIN_FREQ = 392;
+        let SA_MAX_FREQ = 415;
+        let SA_CENTER_FREQ = 403;
+        
+        // Re is a whole tone (200 cents) above Sa
+        let RE_MIN_FREQ = 440;
+        let RE_MAX_FREQ = 466;
+        let RE_CENTER_FREQ = 453;
+        
+        // Progress tracking
+        let correctReCount = 0;
+        let patternCompletions = 0;
+        let hasCompletedRequirements = false;
+        let currentTargetNote = 'sa';
+        let practiceMode = 'single'; // 'single' or 'pattern'
+        
+        // Pattern tracking
+        let currentPattern = ['Sa', 'Re', 'Sa', 'Re'];
+        let patternIndex = 0;
+        let patternStartTime = null;
+        let lastNoteTime = null;
+        let transitionTimes = [];
+        
+        // Breath analysis
+        let frequencyHistory = [];
+        let amplitudeHistory = [];
+        let bestStability = 0;
+        let currentBreathStart = null;
+        let longestBreath = 0;
+        const HISTORY_WINDOW = 30;
+        
+        // Current stage
+        let currentStage = 1;
+        
+        function startLesson() {
+            showAchievement('Second Smile', 'Krishna awaits your musical conversation');
+            nextStage();
+        }
+        
+        function nextStage() {
+            document.getElementById(`stage${currentStage}`).classList.remove('active');
+            currentStage++;
+            setTimeout(() => {
+                document.getElementById(`stage${currentStage}`).classList.add('active');
+            }, 300);
+        }
+        
+        function playReferenceNote(note) {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (note === 'sa') {
+                oscillator.frequency.value = SA_CENTER_FREQ;
+            } else if (note === 're') {
+                oscillator.frequency.value = RE_CENTER_FREQ;
+            }
+            
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
+            gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.5);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 1.5);
+        }
+        
+        function playCurrentReference() {
+            if (practiceMode === 'pattern') {
+                // Play Sa-Re-Sa-Re pattern
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                
+                const notes = [SA_CENTER_FREQ, RE_CENTER_FREQ, SA_CENTER_FREQ, RE_CENTER_FREQ];
+                let time = audioContext.currentTime;
+                
+                notes.forEach((freq, i) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0, time + i * 0.5);
+                    gainNode.gain.linearRampToValueAtTime(0.2, time + i * 0.5 + 0.05);
+                    gainNode.gain.linearRampToValueAtTime(0, time + i * 0.5 + 0.45);
+                    
+                    oscillator.start(time + i * 0.5);
+                    oscillator.stop(time + i * 0.5 + 0.5);
+                });
+            } else {
+                playReferenceNote(currentTargetNote);
+            }
+        }
+        
+        function selectTargetNote(note) {
+            // Update button states
+            document.querySelectorAll('.note-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            if (note === 'pattern') {
+                practiceMode = 'pattern';
+                currentTargetNote = 'pattern';
+                document.getElementById('patternDisplay').style.display = 'block';
+                document.getElementById('practiceInstruction').textContent = 'Play the Sa-Re pattern';
+                document.getElementById('targetRange').textContent = 'Follow the pattern: Sa → Re → Sa → Re';
+                patternIndex = 0;
+                updatePatternDisplay();
+            } else {
+                practiceMode = 'single';
+                currentTargetNote = note;
+                document.getElementById('patternDisplay').style.display = 'none';
+                document.getElementById('practiceInstruction').textContent = `Practice ${note.toUpperCase()}`;
+                
+                if (note === 'sa') {
+                    document.getElementById('targetRange').textContent = `Target: Sa (${SA_MIN_FREQ}-${SA_MAX_FREQ} Hz)`;
+                } else {
+                    document.getElementById('targetRange').textContent = `Target: Re (${RE_MIN_FREQ}-${RE_MAX_FREQ} Hz)`;
+                }
+            }
+        }
+        
+        function updatePatternDisplay() {
+            const notes = document.querySelectorAll('.pattern-note');
+            notes.forEach((note, i) => {
+                if (i === patternIndex) {
+                    note.classList.add('current');
+                } else {
+                    note.classList.remove('current');
+                }
+            });
+        }
+        
+        async function startMicrophone() {
+            try {
+                document.getElementById('errorMessage').textContent = '';
+                
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: false,
+                        noiseSuppression: false,
+                        autoGainControl: false
+                    } 
+                });
+                
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                microphone = audioContext.createMediaStreamSource(stream);
+                
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 4096;
+                analyser.smoothingTimeConstant = 0.8;
+                
+                const bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+                
+                microphone.connect(analyser);
+                
+                document.getElementById('startButton').disabled = true;
+                document.getElementById('stopButton').disabled = false;
+                
+                monitor();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('errorMessage').textContent = 
+                    'Error: Could not access microphone. Please ensure you grant permission.';
+            }
+        }
+        
+        function stopMicrophone() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            
+            if (microphone) {
+                microphone.disconnect();
+            }
+            
+            if (audioContext) {
+                audioContext.close();
+            }
+            
+            document.getElementById('startButton').disabled = false;
+            document.getElementById('stopButton').disabled = true;
+            document.getElementById('pitchIndicator').textContent = '🎵';
+            document.getElementById('pitchIndicator').className = 'pitch-indicator';
+            document.getElementById('frequencyDisplay').textContent = 'Ready to listen...';
+            
+            updateRequirements();
+        }
+        
+        function monitor() {
+            analyser.getByteFrequencyData(dataArray);
+            
+            // Find peak frequency
+            let maxValue = 0;
+            let maxIndex = 0;
+            
+            const minBin = Math.floor(200 * dataArray.length / (audioContext.sampleRate / 2));
+            const maxBin = Math.floor(600 * dataArray.length / (audioContext.sampleRate / 2));
+            
+            for (let i = minBin; i < maxBin && i < dataArray.length; i++) {
+                if (dataArray[i] > maxValue) {
+                    maxValue = dataArray[i];
+                    maxIndex = i;
+                }
+            }
+            
+            if (maxValue > 50) {
+                // Parabolic interpolation
+                let y1 = maxIndex > 0 ? dataArray[maxIndex - 1] : 0;
+                let y2 = dataArray[maxIndex];
+                let y3 = maxIndex < dataArray.length - 1 ? dataArray[maxIndex + 1] : 0;
+                
+                let x0 = (y3 - y1) / (2 * (2 * y2 - y1 - y3));
+                let interpolatedIndex = maxIndex + x0;
+                
+                const nyquist = audioContext.sampleRate / 2;
+                const frequency = (interpolatedIndex * nyquist) / dataArray.length;
+                
+                updatePitchDisplay(frequency);
+                checkNote(frequency);
+                analyzeBreath(frequency, maxValue);
+                
+                if (!currentBreathStart) {
+                    currentBreathStart = Date.now();
+                }
+                
+            } else {
+                // No sound
+                if (currentBreathStart) {
+                    const breathDuration = (Date.now() - currentBreathStart) / 1000;
+                    if (breathDuration > longestBreath) {
+                        longestBreath = breathDuration;
+                    }
+                    currentBreathStart = null;
+                }
+                
+                document.getElementById('pitchIndicator').textContent = '🎵';
+                document.getElementById('pitchIndicator').className = 'pitch-indicator';
+                document.getElementById('frequencyDisplay').textContent = 'Play louder...';
+                document.getElementById('currentNote').textContent = '--';
+                document.getElementById('breathLength').textContent = '0s';
+            }
+            
+            animationId = requestAnimationFrame(monitor);
+        }
+        
+        function updatePitchDisplay(frequency) {
+            const indicator = document.getElementById('pitchIndicator');
+            const noteDisplay = document.getElementById('currentNote');
+            
+            document.getElementById('frequencyDisplay').textContent = `${Math.round(frequency)} Hz`;
+            
+            // Determine which note is being played
+            const noteName = getNoteName(frequency);
+            noteDisplay.textContent = noteName;
+            
+            // Update breath length
+            if (currentBreathStart) {
+                const breathDuration = (Date.now() - currentBreathStart) / 1000;
+                document.getElementById('breathLength').textContent = breathDuration.toFixed(1) + 's';
+            }
+            
+            if (practiceMode === 'single') {
+                // Single note practice
+                if (currentTargetNote === 'sa' && frequency >= SA_MIN_FREQ && frequency <= SA_MAX_FREQ) {
+                    indicator.textContent = '✓';
+                    indicator.className = 'pitch-indicator pitch-correct';
+                } else if (currentTargetNote === 're' && frequency >= RE_MIN_FREQ && frequency <= RE_MAX_FREQ) {
+                    indicator.textContent = '✓';
+                    indicator.className = 'pitch-indicator pitch-correct';
+                } else {
+                    // Show direction
+                    if (currentTargetNote === 'sa') {
+                        if (frequency < SA_MIN_FREQ) {
+                            indicator.textContent = '↑';
+                        } else {
+                            indicator.textContent = '↓';
+                        }
+                    } else if (currentTargetNote === 're') {
+                        if (frequency < RE_MIN_FREQ) {
+                            indicator.textContent = '↑';
+                        } else {
+                            indicator.textContent = '↓';
+                        }
+                    }
+                    
+                    indicator.className = 'pitch-indicator pitch-wrong';
+                }
+            } else {
+                // Pattern practice
+                const expectedNote = currentPattern[patternIndex];
+                if ((expectedNote === 'Sa' && frequency >= SA_MIN_FREQ && frequency <= SA_MAX_FREQ) ||
+                    (expectedNote === 'Re' && frequency >= RE_MIN_FREQ && frequency <= RE_MAX_FREQ)) {
+                    indicator.textContent = '✓';
+                    indicator.className = 'pitch-indicator pitch-correct';
+                } else {
+                    indicator.textContent = '✗';
+                    indicator.className = 'pitch-indicator pitch-wrong';
+                }
+            }
+        }
+        
+        function getNoteName(frequency) {
+            if (frequency >= SA_MIN_FREQ && frequency <= SA_MAX_FREQ) return 'Sa';
+            else if (frequency >= RE_MIN_FREQ && frequency <= RE_MAX_FREQ) return 'Re';
+            else if (frequency < SA_MIN_FREQ) return 'Low';
+            else if (frequency > RE_MAX_FREQ && frequency < 520) return 'Ga';
+            else return 'High';
+        }
+        
+        function checkNote(frequency) {
+            // Check Re mastery
+            if (frequency >= RE_MIN_FREQ && frequency <= RE_MAX_FREQ) {
+                if (!lastNoteTime || Date.now() - lastNoteTime > 500) {
+                    correctReCount++;
+                    if (correctReCount === 1) {
+                        showAchievement('First Re!', 'Krishna smiles with joy');
+                    } else if (correctReCount === 3) {
+                        showAchievement('Re Master', 'The second note is yours');
+                    }
+                    updateRequirements();
+                }
+                lastNoteTime = Date.now();
+            }
+            
+            // Pattern tracking
+            if (practiceMode === 'pattern') {
+                const expectedNote = currentPattern[patternIndex];
+                const isCorrect = (expectedNote === 'Sa' && frequency >= SA_MIN_FREQ && frequency <= SA_MAX_FREQ) ||
+                                 (expectedNote === 'Re' && frequency >= RE_MIN_FREQ && frequency <= RE_MAX_FREQ);
+                
+                if (isCorrect) {
+                    if (!patternStartTime) {
+                        patternStartTime = Date.now();
+                    } else {
+                        // Track transition time
+                        transitionTimes.push(Date.now() - patternStartTime);
+                        patternStartTime = Date.now();
+                    }
+                    
+                    patternIndex++;
+                    updatePatternDisplay();
+                    
+                    if (patternIndex >= currentPattern.length) {
+                        patternIndex = 0;
+                        patternCompletions++;
+                        showAchievement('Pattern Complete!', 'Sa-Re-Sa-Re flows beautifully');
+                        updateRequirements();
+                    }
+                }
+            }
+        }
+        
+        function analyzeBreath(frequency, amplitude) {
+            // Add to history
+            frequencyHistory.push(frequency);
+            amplitudeHistory.push(amplitude);
+            
+            if (frequencyHistory.length > HISTORY_WINDOW) {
+                frequencyHistory.shift();
+                amplitudeHistory.shift();
+            }
+            
+            // Calculate stability
+            if (frequencyHistory.length >= 10) {
+                const avgFreq = frequencyHistory.reduce((a, b) => a + b) / frequencyHistory.length;
+                const variance = frequencyHistory.reduce((sum, f) => sum + Math.pow(f - avgFreq, 2), 0) / frequencyHistory.length;
+                const stability = Math.max(0, 100 - Math.sqrt(variance) * 2);
+                
+                document.getElementById('stabilityScore').textContent = Math.round(stability) + '%';
+                
+                if (stability > bestStability) {
+                    bestStability = stability;
+                }
+                
+                // Update stability indicator
+                const indicator = document.getElementById('stabilityIndicator');
+                if (stability >= 80) {
+                    indicator.textContent = 'Excellent!';
+                    indicator.className = 'metric-indicator good';
+                } else if (stability >= 60) {
+                    indicator.textContent = 'Good';
+                    indicator.className = 'metric-indicator medium';
+                } else {
+                    indicator.textContent = 'Keep steady';
+                    indicator.className = 'metric-indicator poor';
+                }
+            }
+            
+            // Calculate transition smoothness
+            if (transitionTimes.length > 0) {
+                const avgTransition = transitionTimes.reduce((a, b) => a + b) / transitionTimes.length;
+                const transitionScore = Math.max(0, 100 - Math.abs(avgTransition - 1000) / 10);
+                document.getElementById('transitionScore').textContent = Math.round(transitionScore) + '%';
+            }
+            
+            // Update breath visualization
+            const normalizedHeight = Math.min(100, (amplitude / 255) * 100);
+            document.getElementById('breathWave').style.transform = `scaleY(${normalizedHeight / 100})`;
+        }
+        
+        function updateRequirements() {
+            // Requirement 1: Clear Re notes
+            document.getElementById('req1Count').textContent = `(${correctReCount}/3)`;
+            if (correctReCount >= 3) {
+                document.getElementById('req1').textContent = '✓';
+                document.getElementById('req1').classList.add('completed');
+            }
+            
+            // Requirement 2: Pattern completions
+            document.getElementById('req2Count').textContent = `(${patternCompletions}/2)`;
+            if (patternCompletions >= 2) {
+                document.getElementById('req2').textContent = '✓';
+                document.getElementById('req2').classList.add('completed');
+            }
+            
+            // Requirement 3: Smooth transitions
+            if (transitionTimes.length >= 3) {
+                const avgTransition = transitionTimes.reduce((a, b) => a + b) / transitionTimes.length;
+                if (avgTransition >= 800 && avgTransition <= 1200) {
+                    document.getElementById('req3').textContent = '✓';
+                    document.getElementById('req3').classList.add('completed');
+                    document.getElementById('req3Status').textContent = '(Smooth!)';
+                } else {
+                    document.getElementById('req3Status').textContent = '(Keep practicing)';
+                }
+            }
+            
+            // Requirement 4: 8-count breath
+            if (longestBreath >= 8) {
+                document.getElementById('req4').textContent = '✓';
+                document.getElementById('req4').classList.add('completed');
+                document.getElementById('req4Status').textContent = `(${longestBreath.toFixed(1)}s achieved!)`;
+            } else {
+                document.getElementById('req4Status').textContent = `(Best: ${longestBreath.toFixed(1)}s)`;
+            }
+            
+            // Check completion
+            if (correctReCount >= 3 && patternCompletions >= 2 && longestBreath >= 8 && !hasCompletedRequirements) {
+                hasCompletedRequirements = true;
+                document.getElementById('continueBtn').style.display = 'inline-block';
+                showAchievement('Lesson Complete!', 'Krishna dances with joy!');
+            }
+        }
+        
+        function showAchievement(title, description) {
+            const achievement = document.getElementById('achievement');
+            document.getElementById('achievementTitle').textContent = title;
+            document.getElementById('achievementDesc').textContent = description;
+            
+            achievement.classList.add('show');
+            
+            setTimeout(() => {
+                achievement.classList.remove('show');
+            }, 4000);
+        }
+        
+        function showCalibration() {
+            document.querySelector('.modal-overlay').classList.add('show');
+            document.querySelector('.calibration-modal').classList.add('show');
+        }
+        
+        function closeCalibration() {
+            document.querySelector('.modal-overlay').classList.remove('show');
+            document.querySelector('.calibration-modal').classList.remove('show');
+        }
+        
+        function selectFlute(type, saMin, saMax) {
+            SA_MIN_FREQ = saMin;
+            SA_MAX_FREQ = saMax;
+            SA_CENTER_FREQ = (saMin + saMax) / 2;
+            
+            // Calculate Re frequencies (whole tone above Sa)
+            const ratio = Math.pow(2, 200/1200); // 200 cents = whole tone
+            RE_MIN_FREQ = Math.round(saMin * ratio);
+            RE_MAX_FREQ = Math.round(saMax * ratio);
+            RE_CENTER_FREQ = Math.round(SA_CENTER_FREQ * ratio);
+            
+            // Update display
+            if (currentTargetNote === 'sa') {
+                document.getElementById('targetRange').textContent = `Target: Sa (${SA_MIN_FREQ}-${SA_MAX_FREQ} Hz)`;
+            } else if (currentTargetNote === 're') {
+                document.getElementById('targetRange').textContent = `Target: Re (${RE_MIN_FREQ}-${RE_MAX_FREQ} Hz)`;
+            }
+            
+            closeCalibration();
+            showAchievement('Calibrated!', `Set to ${type} Medium flute`);
+        }
+        
+        function returnToDashboard() {
+            window.location.href = 'index.html?completed=2';
+        }
+        
+        function practiceMore() {
+            // Reset and go back to practice stage
+            currentStage = 3;
+            correctReCount = 0;
+            patternCompletions = 0;
+            hasCompletedRequirements = false;
+            transitionTimes = [];
+            longestBreath = 0;
+            
+            // Reset UI
+            document.getElementById('stage5').classList.remove('active');
+            document.getElementById('stage4').classList.add('active');
+            document.getElementById('continueBtn').style.display = 'none';
+            
+            // Reset requirements
+            document.querySelectorAll('.requirement-check').forEach(el => {
+                el.textContent = '⚪';
+                el.classList.remove('completed');
+            });
+            
+            updateRequirements();
+        }
+    </script>
+</body>
+</html>
