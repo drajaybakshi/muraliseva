@@ -1,10 +1,17 @@
-<p style="color: #666; margin-top: 10px;">
+.modal-overlay.show,
+        .calibration-modal.show {
+            display: block;
+        }                <p style="color: #666; margin-top: 10px;">
                     💡 <strong>Transition Tips:</strong><br>
                     • Lift your finger smoothly, like a feather floating up<br>
-                    • Don't rush - take 0.5-1 second to change notes<br>
+                    • Take 0.1-2 seconds to change notes (very flexible!)<br>
                     • Keep steady breath flow during the transition<br>
-                    • Practice "Sa... Re..." with a natural pause
-                </p>        .error {
+                    • Practice "Sa... Re..." with a natural flow
+                </p>
+                
+                <button class="button secondary" onclick="toggleTransitionGuide()" style="margin-top: 10px;">
+                    👁️ Show Visual Guide
+                </button>        .error {
             color: #F44336;
             margin: 20px 0;
         }<!DOCTYPE html>
@@ -469,9 +476,55 @@
             overflow-y: auto;
         }
         
-        .modal-overlay.show,
-        .calibration-modal.show {
-            display: block;
+        /* Visual Transition Guide */
+        .transition-guide {
+            background: #F3E5F5;
+            border: 2px solid #9C27B0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .timing-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .note-block {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .transition-block {
+            background: #2196F3;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .timing-bar {
+            height: 8px;
+            background: #E0E0E0;
+            border-radius: 4px;
+            position: relative;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .timing-indicator {
+            position: absolute;
+            height: 100%;
+            width: 0%;
+            background: #4CAF50;
+            transition: width linear;
         }
     </style>
 </head>
@@ -678,6 +731,21 @@
             </button>
             
             <div id="errorMessage" class="error"></div>
+            
+            <!-- Visual Transition Guide -->
+            <div class="transition-guide" id="transitionGuide" style="display: none;">
+                <h4>🎯 Transition Timing Guide</h4>
+                <div class="timing-visual">
+                    <div class="note-block">Sa<br><small>2-3 sec</small></div>
+                    <div class="transition-block">→<br><small>0.1-2 sec</small></div>
+                    <div class="note-block">Re<br><small>2-3 sec</small></div>
+                    <div class="transition-block">→<br><small>0.1-2 sec</small></div>
+                    <div class="note-block">Sa<br><small>2-3 sec</small></div>
+                </div>
+                <div class="timing-bar">
+                    <div class="timing-indicator" id="timingIndicator"></div>
+                </div>
+            </div>
             
             <div class="progress-dots">
                 <div class="dot completed"></div>
@@ -1150,15 +1218,15 @@
                         const transitionTime = Date.now() - lastNoteTime;
                         transitionTimes.push(transitionTime);
                         
-                        // A smooth transition is between 300ms and 1500ms (more forgiving for beginners)
-                        if (transitionTime >= 300 && transitionTime <= 1500) {
+                        // A smooth transition is between 100ms and 2000ms (very forgiving)
+                        if (transitionTime >= 100 && transitionTime <= 2000) {
                             smoothTransitions++;
                         }
                         
                         // Provide helpful feedback
-                        if (transitionTime < 300) {
+                        if (transitionTime < 100) {
                             showQuickTip('Too fast! Lift your finger more gently 🦋');
-                        } else if (transitionTime > 1500) {
+                        } else if (transitionTime > 2000) {
                             showQuickTip('Too slow! Try a smoother finger motion 🌊');
                         } else {
                             showQuickTip('Perfect transition! 🎵');
@@ -1318,6 +1386,51 @@
         function closeCalibration() {
             document.querySelector('.modal-overlay').classList.remove('show');
             document.querySelector('.calibration-modal').classList.remove('show');
+        }
+        
+        function toggleTransitionGuide() {
+            const guide = document.getElementById('transitionGuide');
+            const btn = event.target;
+            
+            if (guide.style.display === 'none') {
+                guide.style.display = 'block';
+                btn.textContent = '👁️ Hide Visual Guide';
+                animateTimingBar();
+            } else {
+                guide.style.display = 'none';
+                btn.textContent = '👁️ Show Visual Guide';
+            }
+        }
+        
+        function animateTimingBar() {
+            const indicator = document.getElementById('timingIndicator');
+            let phase = 0;
+            const phases = [
+                { width: '20%', duration: 2500, color: '#4CAF50' },  // Sa
+                { width: '40%', duration: 1000, color: '#2196F3' },  // Transition
+                { width: '60%', duration: 2500, color: '#4CAF50' },  // Re
+                { width: '80%', duration: 1000, color: '#2196F3' },  // Transition
+                { width: '100%', duration: 2500, color: '#4CAF50' }  // Sa
+            ];
+            
+            function nextPhase() {
+                if (phase >= phases.length) {
+                    phase = 0;
+                    indicator.style.width = '0%';
+                    setTimeout(nextPhase, 100);
+                    return;
+                }
+                
+                const current = phases[phase];
+                indicator.style.width = current.width;
+                indicator.style.background = current.color;
+                indicator.style.transition = `width ${current.duration}ms linear`;
+                
+                phase++;
+                setTimeout(nextPhase, current.duration);
+            }
+            
+            nextPhase();
         }
         
         function selectFlute(type, saMin, saMax) {
