@@ -19,43 +19,103 @@
             overflow-x: hidden;
         }
         
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #FF8C00, #FFB74D);
-            color: white;
-            padding: 15px 20px;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Screen styles */
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .screen.active {
+            display: flex;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Typography */
+        h1 {
+            color: #FF8C00;
+            font-size: 36px;
+            margin-bottom: 20px;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: relative;
         }
         
-        .lesson-title {
+        h2 {
+            color: #666;
             font-size: 24px;
-            margin-bottom: 5px;
+            margin-bottom: 30px;
+            text-align: center;
         }
         
-        .lesson-subtitle {
-            font-size: 14px;
-            opacity: 0.9;
+        p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 18px;
+            text-align: center;
         }
         
+        /* Buttons */
+        .button {
+            background: #FF8C00;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .button:hover {
+            background: #FF7700;
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255, 140, 0, 0.3);
+        }
+        
+        .button:disabled {
+            background: #CCC;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+        
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        /* Progress indicator */
         .progress-dots {
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-top: 15px;
+            margin: 30px 0;
         }
         
         .dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.3);
+            background: #DDD;
             transition: all 0.3s ease;
         }
         
         .dot.active {
-            background: white;
+            background: #FF8C00;
             transform: scale(1.2);
         }
         
@@ -63,719 +123,398 @@
             background: #4CAF50;
         }
         
-        /* Main Container */
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        /* Lesson Parts */
-        .lesson-part {
+        /* Achievement popup */
+        .achievement {
+            position: fixed;
+            top: 20px;
+            right: -300px;
             background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            display: none;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            z-index: 1000;
         }
         
-        .lesson-part.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
+        .achievement.show {
+            right: 20px;
         }
         
-        .part-header {
+        .achievement-icon {
+            font-size: 40px;
             text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .part-title {
-            font-size: 28px;
-            color: #FF8C00;
             margin-bottom: 10px;
         }
         
-        .part-description {
-            font-size: 16px;
-            color: #666;
-            line-height: 1.6;
-        }
-        
-        /* Story Section */
-        .story-section {
-            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 5px solid #2196F3;
-        }
-        
-        .story-text {
-            font-size: 18px;
-            line-height: 1.7;
-            color: #1565C0;
-            font-style: italic;
+        /* Krishna animation */
+        .krishna-container {
             text-align: center;
+            margin: 30px 0;
         }
         
-        /* Practice Section */
-        .practice-section {
-            background: #F5F5F5;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
+        .krishna-image {
+            font-size: 120px;
+            animation: float 3s ease-in-out infinite;
         }
         
-        .practice-title {
-            font-size: 20px;
-            color: #333;
-            margin-bottom: 15px;
-            text-align: center;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
         
-        /* Breath Exercise */
-        .breath-exercise {
-            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        .breath-instruction {
-            font-size: 18px;
-            color: #2E7D32;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-        
-        .breath-visual {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
+        /* Breath exercise */
+        .breath-circle {
+            width: 200px;
+            height: 200px;
             border: 4px solid #4CAF50;
-            margin: 20px auto;
+            border-radius: 50%;
+            margin: 30px auto;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
             transition: all 0.3s ease;
-            cursor: pointer;
+            background: rgba(76, 175, 80, 0.1);
         }
         
-        .breath-visual.breathing {
-            animation: breathe 4s infinite;
+        .breath-circle.inhale {
+            transform: scale(1.2);
+            background: rgba(76, 175, 80, 0.2);
         }
         
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); border-color: #81C784; }
+        .breath-circle.exhale {
+            transform: scale(0.8);
+            background: rgba(255, 140, 0, 0.2);
+            border-color: #FF8C00;
         }
         
-        /* Technical Practice Section */
-        .technical-section {
-            background: white;
-            border: 2px solid #E0E0E0;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
-        }
-        
-        /* Note Practice Area */
-        .note-practice {
+        /* Flute practice */
+        .flute-visual {
             text-align: center;
-            margin: 20px 0;
+            margin: 30px 0;
+            font-size: 80px;
         }
         
-        .target-note {
+        .note-display {
             font-size: 48px;
             color: #FF8C00;
-            margin: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .frequency-range {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-        
-        /* Pitch Indicator */
-        .pitch-display {
-            background: #F5F5F5;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
             text-align: center;
-        }
-        
-        .pitch-indicator {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 4px solid #E0E0E0;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            transition: all 0.3s ease;
-        }
-        
-        .pitch-correct {
-            border-color: #4CAF50;
-            background: #E8F5E9;
-            color: #2E7D32;
-        }
-        
-        .pitch-close {
-            border-color: #FF9800;
-            background: #FFF3E0;
-            color: #E65100;
-        }
-        
-        .pitch-wrong {
-            border-color: #F44336;
-            background: #FFEBEE;
-            color: #C62828;
-        }
-        
-        .frequency-display {
-            font-size: 18px;
-            color: #666;
-        }
-        
-        /* Progress Tracking */
-        .progress-tracker {
-            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
-            border-radius: 12px;
-            padding: 20px;
             margin: 20px 0;
-        }
-        
-        .progress-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 10px 0;
-            padding: 10px;
-            background: white;
-            border-radius: 8px;
-        }
-        
-        .progress-label {
-            font-weight: 500;
-        }
-        
-        .progress-status {
-            font-size: 24px;
-        }
-        
-        /* Buttons */
-        .btn {
-            background: #FF8C00;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 10px;
-            box-shadow: 0 3px 10px rgba(255, 140, 0, 0.3);
-        }
-        
-        .btn:hover {
-            background: #FF7700;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
-        }
-        
-        .btn:disabled {
-            background: #CCC;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .btn-secondary {
-            background: #2196F3;
-            box-shadow: 0 3px 10px rgba(33, 150, 243, 0.3);
-        }
-        
-        .btn-secondary:hover {
-            background: #1976D2;
-            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
-        }
-        
-        .btn-success {
-            background: #4CAF50;
-            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
-        }
-        
-        .btn-success:hover {
-            background: #45A049;
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-        }
-        
-        /* Navigation */
-        .navigation {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 30px;
-        }
-        
-        /* Completion Section */
-        .completion-section {
-            text-align: center;
-            padding: 40px 20px;
-        }
-        
-        .completion-message {
-            font-size: 24px;
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
-        
-        .achievement-badge {
-            background: linear-gradient(135deg, #FFD700, #FFA000);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 25px;
-            font-size: 18px;
             font-weight: bold;
-            display: inline-block;
-            margin: 10px;
-            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
         }
         
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .lesson-part {
-                padding: 20px;
-            }
-            
-            .part-title {
-                font-size: 24px;
-            }
-            
-            .target-note {
-                font-size: 36px;
-            }
+        /* Completion screen */
+        .completion-stats {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
-        /* Loading Animation */
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            font-size: 18px;
+        }
+        
+        .stat-value {
+            color: #FF8C00;
+            font-weight: bold;
+        }
+        
+        /* Loading state */
         .loading {
             text-align: center;
-            padding: 20px;
-        }
-        
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #E0E0E0;
-            border-top: 4px solid #FF8C00;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            color: #666;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <h1 class="lesson-title">🎵 Lesson 1: Krishna's First Breath 🎵</h1>
-        <p class="lesson-subtitle">Sacred Beginnings - Foundation of Divine Music</p>
-        <div class="progress-dots">
-            <div class="dot active" data-part="0"></div>
-            <div class="dot" data-part="1"></div>
-            <div class="dot" data-part="2"></div>
-            <div class="dot" data-part="3"></div>
-            <div class="dot" data-part="4"></div>
-            <div class="dot" data-part="5"></div>
-        </div>
-    </div>
-
-    <div class="container">
-        <!-- Part 1: Sacred Introduction -->
-        <div class="lesson-part active" id="part-0">
-            <div class="part-header">
-                <h2 class="part-title">🏛️ Sacred Introduction</h2>
-                <p class="part-description">Welcome to your divine journey with the sacred bansuri</p>
+    <!-- Screen 1: Welcome -->
+    <div id="screen1" class="screen active">
+        <div class="container">
+            <h1>🎵 Lesson 1: Krishna's First Breath 🎵</h1>
+            <div class="krishna-container">
+                <div class="krishna-image">👶</div>
+            </div>
+            <p>In Gokul, when Krishna took His first breath,<br>
+            the universe filled with divine music.<br>
+            Today, you begin your journey to find<br>
+            that same sacred sound within your breath.</p>
+            
+            <div class="button-container">
+                <button class="button" onclick="nextScreen()">Begin Sacred Journey</button>
             </div>
             
-            <div class="story-section">
-                <p class="story-text">
-                    "In Gokul, when baby Krishna took His first breath,<br>
-                    the universe filled with divine music.<br><br>
-                    Today, you begin your journey to find<br>
-                    that same sacred sound within your breath."
-                </p>
-            </div>
-            
-            <div style="text-align: center; margin: 30px 0;">
-                <p style="font-size: 18px; color: #666; margin-bottom: 20px;">
-                    Take a moment to center yourself. You are about to embark on a sacred practice that connects you directly to Krishna's divine leelas.
-                </p>
-                <div style="font-size: 48px; margin: 20px 0;">🕉️</div>
-                <p style="font-size: 16px; color: #999;">
-                    Duration: 3 minutes
-                </p>
-            </div>
-            
-            <div class="navigation">
-                <div></div>
-                <button class="btn" onclick="nextPart()">Begin Sacred Practice 🙏</button>
-            </div>
-        </div>
-
-        <!-- Part 2: Pranaam & Preparation -->
-        <div class="lesson-part" id="part-1">
-            <div class="part-header">
-                <h2 class="part-title">🙏 Pranaam & Preparation</h2>
-                <p class="part-description">Honoring the bansuri and preparing your breath</p>
-            </div>
-            
-            <div class="practice-section">
-                <h3 class="practice-title">Bansuri Blessing</h3>
-                <p style="text-align: center; margin-bottom: 20px; font-size: 16px; color: #666;">
-                    Hold your bansuri with both hands at heart level, as if holding a sacred offering
-                </p>
-                
-                <div style="text-align: center; margin: 30px 0;">
-                    <div style="font-size: 64px; margin: 20px 0;">🎵</div>
-                    <p style="font-style: italic; color: #666;">
-                        "This flute is my connection to Krishna's divine music"
-                    </p>
-                </div>
-                
-                <div class="breath-exercise">
-                    <p class="breath-instruction">
-                        Place one hand on your belly. Breathe naturally and observe:
-                    </p>
-                    <ul style="text-align: left; max-width: 400px; margin: 0 auto;">
-                        <li>Belly expands on inhale</li>
-                        <li>Belly contracts on exhale</li>
-                        <li>This is Krishna's prana flowing through you</li>
-                    </ul>
-                    
-                    <div class="breath-visual" id="breathGuide" onclick="startBreathGuide()">
-                        🌸
-                    </div>
-                    <button class="btn btn-secondary" onclick="startBreathGuide()">Start Breath Awareness</button>
-                </div>
-            </div>
-            
-            <div class="navigation">
-                <button class="btn btn-secondary" onclick="prevPart()">← Previous</button>
-                <button class="btn" onclick="nextPart()" id="part1Next" disabled>Continue to Sa Practice →</button>
-            </div>
-        </div>
-
-        <!-- Part 3: First Sound - Sa -->
-        <div class="lesson-part" id="part-2">
-            <div class="part-header">
-                <h2 class="part-title">🎵 First Sound - Sa</h2>
-                <p class="part-description">Creating your first sacred note</p>
-            </div>
-            
-            <div class="note-practice">
-                <h3 style="color: #FF8C00; margin-bottom: 15px;">Target Note</h3>
-                <div class="target-note">Sa</div>
-                <div class="frequency-range">370 - 405 Hz</div>
-                <button class="btn btn-secondary" onclick="playReferenceNote()">🔊 Play Reference Sa</button>
-            </div>
-            
-            <div class="technical-section">
-                <h3 style="text-align: center; margin-bottom: 20px;">Embouchure Formation</h3>
-                <div style="text-align: center; margin: 20px 0;">
-                    <p style="font-size: 18px; color: #666; margin-bottom: 15px;">
-                        "Kiss the air gently" - 45 degrees downward
-                    </p>
-                    <div style="font-size: 48px; margin: 15px 0;">💋➡️🎵</div>
-                </div>
-                
-                <div class="pitch-display">
-                    <div class="pitch-indicator" id="pitchIndicator">🎵</div>
-                    <div class="frequency-display" id="frequencyDisplay">Ready to listen...</div>
-                    <div style="margin-top: 15px;">
-                        <button class="btn" id="startMic" onclick="startMicrophone()">Start Practice</button>
-                        <button class="btn btn-secondary" id="stopMic" onclick="stopMicrophone()" disabled>Stop</button>
-                    </div>
-                </div>
-                
-                <div class="progress-tracker">
-                    <h4 style="text-align: center; margin-bottom: 15px;">Progress Tracking</h4>
-                    <div class="progress-item">
-                        <span class="progress-label">Perfect Sa Notes</span>
-                        <span class="progress-status" id="perfectNotes">0 / 3</span>
-                    </div>
-                    <div class="progress-item">
-                        <span class="progress-label">Longest Duration</span>
-                        <span class="progress-status" id="longestDuration">0.0s</span>
-                    </div>
-                    <div class="progress-item">
-                        <span class="progress-label">Breath Control</span>
-                        <span class="progress-status" id="breathStatus">📊</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="navigation">
-                <button class="btn btn-secondary" onclick="prevPart()">← Previous</button>
-                <button class="btn" onclick="nextPart()" id="part2Next" disabled>Continue to Story →</button>
-            </div>
-        </div>
-
-        <!-- Part 4: Krishna Story Integration -->
-        <div class="lesson-part" id="part-3">
-            <div class="part-header">
-                <h2 class="part-title">📖 Krishna's First Musical Moment</h2>
-                <p class="part-description">Connecting your practice to divine leela</p>
-            </div>
-            
-            <div class="story-section">
-                <p class="story-text">
-                    "Just as baby Krishna's first sounds delighted Mother Yashoda,<br>
-                    your first Sa has begun your sacred journey.<br><br>
-                    
-                    In the Bhagavata Purana, it is said that when Krishna<br>
-                    first touched the flute, even the wind stopped to listen.<br><br>
-                    
-                    Your breath through the bansuri is both practice and prayer."
-                </p>
-            </div>
-            
-            <div style="text-align: center; margin: 30px 0;">
-                <h3 style="color: #FF8C00; margin-bottom: 20px;">Offer Your Sa to Krishna</h3>
-                <div id="peacockFeather" style="font-size: 64px; margin: 20px 0; opacity: 0.3; transition: all 0.5s ease;">🦚</div>
-                <p style="color: #666; margin-bottom: 20px;">Play your Sa note and watch the peacock feather dance</p>
-                <button class="btn" onclick="offerSaToKrishna()" id="offerBtn">🎵 Offer My Sa</button>
-            </div>
-            
-            <div id="offeringResult" style="text-align: center; margin-top: 20px; display: none;">
-                <p style="font-size: 20px; color: #4CAF50; margin-bottom: 10px;">🌟 Beautiful! Krishna smiles! 🌟</p>
-                <p style="color: #666;">Your devotion through music has been received</p>
-            </div>
-            
-            <div class="navigation">
-                <button class="btn btn-secondary" onclick="prevPart()">← Previous</button>
-                <button class="btn" onclick="nextPart()">Continue to Wellness →</button>
-            </div>
-        </div>
-
-        <!-- Part 5: Wellness Reflection -->
-        <div class="lesson-part" id="part-4">
-            <div class="part-header">
-                <h2 class="part-title">🌿 Wellness Reflection</h2>
-                <p class="part-description">Observing the benefits of BansuriPrana</p>
-            </div>
-            
-            <div class="breath-exercise">
-                <p class="breath-instruction">
-                    "Notice how you feel now...<br>
-                    Is your breath deeper?<br>
-                    Is your mind calmer?<br><br>
-                    This is the beginning of BansuriPrana"
-                </p>
-                
-                <div style="margin: 30px 0;">
-                    <h4 style="color: #2E7D32; margin-bottom: 15px;">Your Session Benefits</h4>
-                    <div style="background: white; padding: 20px; border-radius: 8px; margin: 10px 0;">
-                        <strong>🫁 Respiratory:</strong> <span id="breathImprovement">Enhanced diaphragmatic breathing</span>
-                    </div>
-                    <div style="background: white; padding: 20px; border-radius: 8px; margin: 10px 0;">
-                        <strong>🧠 Mental:</strong> <span id="mentalBenefit">Increased focus and mindfulness</span>
-                    </div>
-                    <div style="background: white; padding: 20px; border-radius: 8px; margin: 10px 0;">
-                        <strong>🙏 Spiritual:</strong> <span id="spiritualBenefit">Connected to Krishna through sacred sound</span>
-                    </div>
-                </div>
-                
-                <div style="text-align: center; margin: 20px 0;">
-                    <p style="font-size: 16px; color: #666; margin-bottom: 15px;">
-                        Rate your experience:
-                    </p>
-                    <div id="ratingStars" style="font-size: 32px; cursor: pointer;">
-                        <span onclick="setRating(1)">⭐</span>
-                        <span onclick="setRating(2)">⭐</span>
-                        <span onclick="setRating(3)">⭐</span>
-                        <span onclick="setRating(4)">⭐</span>
-                        <span onclick="setRating(5)">⭐</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="navigation">
-                <button class="btn btn-secondary" onclick="prevPart()">← Previous</button>
-                <button class="btn" onclick="nextPart()">Complete Lesson →</button>
-            </div>
-        </div>
-
-        <!-- Part 6: Lesson Completion -->
-        <div class="lesson-part" id="part-5">
-            <div class="completion-section">
-                <h2 class="part-title">🎉 Lesson Complete! 🎉</h2>
-                
-                <div style="margin: 30px 0;">
-                    <div class="achievement-badge">Sacred Beginning Achievement</div>
-                    <div class="achievement-badge">First Sa Mastered</div>
-                </div>
-                
-                <div class="completion-message">
-                    Your offering to Krishna today:
-                </div>
-                
-                <div class="progress-tracker">
-                    <div class="progress-item">
-                        <span class="progress-label">🎵 Musical Progress</span>
-                        <span class="progress-status">+15 points</span>
-                    </div>
-                    <div class="progress-item">
-                        <span class="progress-label">🌬️ Prana Shakti</span>
-                        <span class="progress-status">+10 points</span>
-                    </div>
-                    <div class="progress-item">
-                        <span class="progress-label">🙏 Bhakti Score</span>
-                        <span class="progress-status">+20 points</span>
-                    </div>
-                </div>
-                
-                <div style="margin: 30px 0;">
-                    <h3 style="color: #FF8C00; margin-bottom: 15px;">Your Journey Continues...</h3>
-                    <p style="color: #666; font-size: 16px; line-height: 1.6;">
-                        You have taken the first step on your sacred path. Tomorrow, Krishna awaits to teach you the second note - Re, "Krishna's Second Smile."
-                    </p>
-                </div>
-                
-                <div style="margin: 30px 0;">
-                    <button class="btn btn-success" onclick="goToDashboard()">Return to Dashboard</button>
-                    <button class="btn" onclick="restartLesson()">Practice Again</button>
-                </div>
-                
-                <div style="margin-top: 40px; padding: 20px; background: #E3F2FD; border-radius: 12px;">
-                    <h4 style="color: #1565C0; margin-bottom: 10px;">🎯 Tomorrow's Practice Hint</h4>
-                    <p style="color: #1976D2; font-style: italic;">
-                        "When you return, your Sa will be stronger. Practice makes the heart sing with Krishna's joy."
-                    </p>
-                </div>
+            <div class="progress-dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
             </div>
         </div>
     </div>
-
+    
+    <!-- Screen 2: Pranaam & Preparation -->
+    <div id="screen2" class="screen">
+        <div class="container">
+            <h1>🙏 Pranaam & Preparation 🙏</h1>
+            <div class="flute-visual">🪈</div>
+            
+            <p>Hold your bansuri with both hands at heart level.<br>
+            Take a moment to offer your respect to this sacred instrument.</p>
+            
+            <div class="breath-circle" id="breathCircle">
+                <span id="breathText">Breathe</span>
+            </div>
+            
+            <p id="breathInstruction">Place one hand on your belly. Watch it expand and contract.</p>
+            
+            <div class="button-container">
+                <button class="button" onclick="startBreathExercise()">Start Breathing Exercise</button>
+                <button class="button" onclick="nextScreen()" style="display:none;" id="continueBtn2">Continue</button>
+            </div>
+            
+            <div class="progress-dots">
+                <div class="dot completed"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Screen 3: Finding Sa -->
+    <div id="screen3" class="screen">
+        <div class="container">
+            <h1>🎵 Finding Your First Note - Sa 🎵</h1>
+            
+            <div class="note-display">Sa</div>
+            
+            <p>Listen to the sacred sound of Sa.<br>
+            This is the foundation of all music.</p>
+            
+            <div class="button-container">
+                <button class="button" onclick="playReferenceNote()">🔊 Play Sa</button>
+            </div>
+            
+            <p style="margin-top: 30px;">Now, gently blow into your bansuri.<br>
+            All holes should be covered.</p>
+            
+            <div class="flute-visual">🪈</div>
+            
+            <div class="button-container">
+                <button class="button" onclick="simulatePractice()">Practice Sa</button>
+                <button class="button" onclick="nextScreen()" style="display:none;" id="continueBtn3">Beautiful! Continue</button>
+            </div>
+            
+            <div class="progress-dots">
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Screen 4: Sa-Re Alternation -->
+    <div id="screen4" class="screen">
+        <div class="container">
+            <h1>✨ Krishna's Dance ✨</h1>
+            
+            <p>Just as baby Krishna's first sounds<br>
+            delighted Mother Yashoda,<br>
+            your first Sa has begun your journey.</p>
+            
+            <div class="krishna-container">
+                <div class="krishna-image">💃</div>
+            </div>
+            
+            <p>In Bhagavata Purana, it's said that<br>
+            when Krishna first touched the flute,<br>
+            even the wind stopped to listen.</p>
+            
+            <div class="button-container">
+                <button class="button" onclick="playSaAgain()">Play Your Sa Once More</button>
+                <button class="button" onclick="nextScreen()" id="continueBtn4">Continue Journey</button>
+            </div>
+            
+            <div class="progress-dots">
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Screen 5: Wellness Reflection -->
+    <div id="screen5" class="screen">
+        <div class="container">
+            <h1>🌸 Wellness Reflection 🌸</h1>
+            
+            <p>Notice how you feel now.<br>
+            Is your breath deeper?<br>
+            Is your mind calmer?<br>
+            This is the beginning of BansuriPrana.</p>
+            
+            <div class="breath-circle">
+                <span>Peaceful</span>
+            </div>
+            
+            <p>Your breath rate has improved.<br>
+            Your focus has deepened.<br>
+            Krishna's blessings flow through you.</p>
+            
+            <div class="button-container">
+                <button class="button" onclick="nextScreen()">Complete Lesson</button>
+            </div>
+            
+            <div class="progress-dots">
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Screen 6: Completion -->
+    <div id="screen6" class="screen">
+        <div class="container">
+            <h1>🎉 Today's Seva Complete! 🎉</h1>
+            
+            <div class="krishna-container">
+                <div class="krishna-image">🙏</div>
+            </div>
+            
+            <div class="completion-stats">
+                <h2>Your Offering to Krishna:</h2>
+                <div class="stat-row">
+                    <span>🎵 Musical:</span>
+                    <span class="stat-value">3 perfect Sa notes achieved</span>
+                </div>
+                <div class="stat-row">
+                    <span>🌬️ Prana:</span>
+                    <span class="stat-value">6-count exhales mastered</span>
+                </div>
+                <div class="stat-row">
+                    <span>🙏 Bhakti:</span>
+                    <span class="stat-value">First connection established</span>
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <button class="button" onclick="backToDashboard()">Return to Dashboard</button>
+                <button class="button" onclick="practiceMore()">Practice More</button>
+            </div>
+            
+            <div class="progress-dots">
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+                <div class="dot completed"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Achievement Popup -->
+    <div id="achievement" class="achievement">
+        <div class="achievement-icon">🏆</div>
+        <h3>Achievement Unlocked!</h3>
+        <p id="achievementText">Sacred Beginning</p>
+    </div>
+    
+    <!-- Audio Context -->
+    <audio id="saNote" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQoGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" type="audio/wav">
+    </audio>
+    
     <script>
-        // Lesson state management
-        let currentPart = 0;
-        let lessonData = {
-            perfectNotes: 0,
-            longestDuration: 0,
-            breathCompleted: false,
-            rating: 0,
-            completed: false
-        };
-        
-        // Audio context for note generation and microphone
+        let currentScreen = 1;
+        let breathCount = 0;
+        let practiceCount = 0;
         let audioContext;
-        let microphone;
-        let analyser;
-        let dataArray;
-        let animationId;
-        let isListening = false;
         
-        // Lesson progress tracking
-        let breathGuideActive = false;
-        let saDetectionCount = 0;
-        let currentNoteStart = null;
-        
-        function nextPart() {
-            if (currentPart < 5) {
-                // Hide current part
-                document.getElementById(`part-${currentPart}`).classList.remove('active');
-                document.querySelector(`.dot[data-part="${currentPart}"]`).classList.add('completed');
-                
-                // Show next part
-                currentPart++;
-                setTimeout(() => {
-                    document.getElementById(`part-${currentPart}`).classList.add('active');
-                    document.querySelector(`.dot[data-part="${currentPart}"]`).classList.add('active');
-                    
-                    // Auto-start specific parts
-                    if (currentPart === 2) {
-                        // Enable microphone section
-                        updatePartProgress();
-                    }
-                }, 300);
-                
-                // Update progress dots
-                updateProgressDots();
-            }
-        }
-        
-        function prevPart() {
-            if (currentPart > 0) {
-                // Hide current part
-                document.getElementById(`part-${currentPart}`).classList.remove('active');
-                document.querySelector(`.dot[data-part="${currentPart}"]`).classList.remove('active');
-                
-                // Show previous part
-                currentPart--;
-                setTimeout(() => {
-                    document.getElementById(`part-${currentPart}`).classList.add('active');
-                    document.querySelector(`.dot[data-part="${currentPart}"]`).classList.add('active');
-                }, 300);
-                
-                updateProgressDots();
-            }
-        }
-        
-        function updateProgressDots() {
-            document.querySelectorAll('.dot').forEach((dot, index) => {
-                dot.classList.remove('active', 'completed');
-                if (index < currentPart) {
-                    dot.classList.add('completed');
-                } else if (index === currentPart) {
-                    dot.classList.add('active');
-                }
-            });
-        }
-        
-        // Breath guide functionality
-        function startBreathGuide() {
-            const guide = document.getElementById('breathGuide');
-            const nextBtn = document.getElementById('part1Next');
+        function nextScreen() {
+            // Hide current screen
+            document.getElementById(`screen${currentScreen}`).classList.remove('active');
             
-            if (!breathGuideActive) {
-                breathGuideActive = true;
-                guide.classList.add('breathing');
-                guide.innerHTML = '🌸<br><small>Breathe with the lotus</small>';
-                
-                // Enable next button after 30 seconds of breathing
+            // Show next screen
+            currentScreen++;
+            if (currentScreen <= 6) {
                 setTimeout(() => {
-                    lessonData.breathCompleted = true;
-                    nextBtn.disabled = false;
-                    nextBtn.innerHTML = 'Breath Awareness Complete! Continue →';
-                    guide.innerHTML = '🌺<br><small>Breath awareness achieved</small>';
-                    guide.classList.remove('breathing');
-                }, 30000);
+                    document.getElementById(`screen${currentScreen}`).classList.add('active');
+                }, 300);
             }
         }
         
-        // Reference note generation
+        function showAchievement(text) {
+            const achievement = document.getElementById('achievement');
+            document.getElementById('achievementText').textContent = text;
+            achievement.classList.add('show');
+            
+            setTimeout(() => {
+                achievement.classList.remove('show');
+            }, 3000);
+        }
+        
+        function startBreathExercise() {
+            const circle = document.getElementById('breathCircle');
+            const text = document.getElementById('breathText');
+            const instruction = document.getElementById('breathInstruction');
+            const button = event.target;
+            
+            button.disabled = true;
+            breathCount = 0;
+            
+            function breathCycle() {
+                if (breathCount >= 3) {
+                    text.textContent = 'Complete!';
+                    instruction.textContent = 'Excellent! Your breath is now steady and deep.';
+                    document.getElementById('continueBtn2').style.display = 'inline-block';
+                    showAchievement('Breath Awareness Unlocked');
+                    return;
+                }
+                
+                // Inhale
+                circle.classList.add('inhale');
+                circle.classList.remove('exhale');
+                text.textContent = 'Inhale';
+                instruction.textContent = 'Breathe in slowly through your nose...';
+                
+                setTimeout(() => {
+                    // Exhale
+                    circle.classList.remove('inhale');
+                    circle.classList.add('exhale');
+                    text.textContent = 'Exhale';
+                    instruction.textContent = 'Breathe out gently through your mouth...';
+                    
+                    setTimeout(() => {
+                        breathCount++;
+                        breathCycle();
+                    }, 3000);
+                }, 3000);
+            }
+            
+            breathCycle();
+        }
+        
         function playReferenceNote() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -787,298 +526,70 @@
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
             
-            // Sa frequency (around 387.5 Hz - middle of range)
-            oscillator.frequency.value = 387.5;
+            oscillator.frequency.value = 261.63; // C4 (Sa)
             oscillator.type = 'sine';
             
-            // Gentle envelope
             gainNode.gain.setValueAtTime(0, audioContext.currentTime);
             gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
-            gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 2);
+            gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.5);
             
             oscillator.start();
-            oscillator.stop(audioContext.currentTime + 2);
+            oscillator.stop(audioContext.currentTime + 1.5);
         }
         
-        // Microphone functionality
-        async function startMicrophone() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    audio: {
-                        echoCancellation: false,
-                        noiseSuppression: false,
-                        autoGainControl: false
-                    } 
-                });
-                
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                
-                microphone = audioContext.createMediaStreamSource(stream);
-                analyser = audioContext.createAnalyser();
-                analyser.fftSize = 2048;
-                analyser.smoothingTimeConstant = 0.8;
-                
-                const bufferLength = analyser.frequencyBinCount;
-                dataArray = new Uint8Array(bufferLength);
-                
-                microphone.connect(analyser);
-                
-                document.getElementById('startMic').disabled = true;
-                document.getElementById('stopMic').disabled = false;
-                
-                isListening = true;
-                monitorPitch();
-                
-            } catch (error) {
-                console.error('Microphone error:', error);
-                alert('Could not access microphone. Please ensure you grant permission.');
-            }
-        }
-        
-        function stopMicrophone() {
-            isListening = false;
-            
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-            }
-            
-            if (microphone) {
-                microphone.disconnect();
-            }
-            
-            document.getElementById('startMic').disabled = false;
-            document.getElementById('stopMic').disabled = true;
-            
-            // Reset displays
-            document.getElementById('pitchIndicator').textContent = '🎵';
-            document.getElementById('pitchIndicator').className = 'pitch-indicator';
-            document.getElementById('frequencyDisplay').textContent = 'Ready to listen...';
-        }
-        
-        function monitorPitch() {
-            if (!isListening) return;
-            
-            analyser.getByteFrequencyData(dataArray);
-            
-            // Find peak frequency
-            let maxValue = 0;
-            let maxIndex = 0;
-            
-            const minBin = Math.floor(300 * dataArray.length / (audioContext.sampleRate / 2));
-            const maxBin = Math.floor(500 * dataArray.length / (audioContext.sampleRate / 2));
-            
-            for (let i = minBin; i < maxBin && i < dataArray.length; i++) {
-                if (dataArray[i] > maxValue) {
-                    maxValue = dataArray[i];
-                    maxIndex = i;
-                }
-            }
-            
-            if (maxValue > 30) {
-                const nyquist = audioContext.sampleRate / 2;
-                const frequency = (maxIndex * nyquist) / dataArray.length;
-                
-                updatePitchDisplay(frequency);
-                checkSaNote(frequency);
-            } else {
-                // No sound detected
-                document.getElementById('pitchIndicator').textContent = '🎵';
-                document.getElementById('pitchIndicator').className = 'pitch-indicator';
-                document.getElementById('frequencyDisplay').textContent = 'Play louder...';
-                
-                if (currentNoteStart) {
-                    recordNoteDuration();
-                }
-            }
-            
-            animationId = requestAnimationFrame(monitorPitch);
-        }
-        
-        function updatePitchDisplay(frequency) {
-            const indicator = document.getElementById('pitchIndicator');
-            const display = document.getElementById('frequencyDisplay');
-            
-            display.textContent = `${Math.round(frequency)} Hz`;
-            
-            // Check if frequency is in Sa range (370-405 Hz)
-            if (frequency >= 370 && frequency <= 405) {
-                indicator.textContent = '✓';
-                indicator.className = 'pitch-indicator pitch-correct';
-            } else if (frequency >= 350 && frequency <= 425) {
-                indicator.textContent = '~';
-                indicator.className = 'pitch-indicator pitch-close';
-            } else {
-                indicator.textContent = '✗';
-                indicator.className = 'pitch-indicator pitch-wrong';
-            }
-        }
-        
-        function checkSaNote(frequency) {
-            if (frequency >= 370 && frequency <= 405) {
-                if (!currentNoteStart) {
-                    currentNoteStart = Date.now();
-                }
-            } else {
-                if (currentNoteStart) {
-                    recordNoteDuration();
-                }
-            }
-        }
-        
-        function recordNoteDuration() {
-            if (currentNoteStart) {
-                const duration = (Date.now() - currentNoteStart) / 1000;
-                
-                if (duration >= 3) { // 3 second minimum for a "perfect" note
-                    lessonData.perfectNotes++;
-                    document.getElementById('perfectNotes').textContent = `${lessonData.perfectNotes} / 3`;
-                    
-                    if (lessonData.perfectNotes >= 3) {
-                        document.getElementById('part2Next').disabled = false;
-                        document.getElementById('part2Next').innerHTML = 'Sa Mastered! Continue →';
-                    }
-                }
-                
-                if (duration > lessonData.longestDuration) {
-                    lessonData.longestDuration = duration;
-                    document.getElementById('longestDuration').textContent = `${duration.toFixed(1)}s`;
-                }
-                
-                currentNoteStart = null;
-                updateBreathStatus();
-            }
-        }
-        
-        function updateBreathStatus() {
-            const status = document.getElementById('breathStatus');
-            if (lessonData.longestDuration > 5) {
-                status.textContent = '🌟 Excellent!';
-            } else if (lessonData.longestDuration > 3) {
-                status.textContent = '👍 Good!';
-            } else {
-                status.textContent = '💪 Keep going!';
-            }
-        }
-        
-        function updatePartProgress() {
-            // This function can be called to update progress for any part
-            const nextBtn = document.getElementById('part2Next');
-            if (nextBtn && lessonData.perfectNotes >= 3) {
-                nextBtn.disabled = false;
-            }
-        }
-        
-        // Krishna story interaction
-        function offerSaToKrishna() {
-            const feather = document.getElementById('peacockFeather');
-            const result = document.getElementById('offeringResult');
-            const btn = document.getElementById('offerBtn');
-            
-            feather.style.opacity = '1';
-            feather.style.transform = 'scale(1.2) rotate(10deg)';
+        function simulatePractice() {
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = 'Listening...';
             
             setTimeout(() => {
-                result.style.display = 'block';
-                btn.textContent = '🎵 Offered with Love ✓';
-                btn.disabled = true;
-                btn.classList.add('btn-success');
-            }, 1000);
-        }
-        
-        // Rating system
-        function setRating(stars) {
-            lessonData.rating = stars;
-            const starElements = document.querySelectorAll('#ratingStars span');
-            
-            starElements.forEach((star, index) => {
-                if (index < stars) {
-                    star.textContent = '⭐';
-                    star.style.color = '#FFD700';
+                practiceCount++;
+                if (practiceCount >= 3) {
+                    button.textContent = 'Perfect! 3 Sa notes achieved!';
+                    document.getElementById('continueBtn3').style.display = 'inline-block';
+                    showAchievement('First Sa Mastered!');
                 } else {
-                    star.textContent = '☆';
-                    star.style.color = '#DDD';
+                    button.textContent = `Good! ${practiceCount}/3 - Try again`;
+                    button.disabled = false;
                 }
-            });
+            }, 2000);
         }
         
-        // Navigation functions
-        function goToDashboard() {
-            // Save lesson completion
-            lessonData.completed = true;
-            safeLocalStorageSet('lesson1Complete', JSON.stringify(lessonData));
-            
-            // In a real app, this would navigate to dashboard
-            alert('Lesson 1 completed! 🎉\n\nReturning to dashboard...');
-            
-            // For now, show completion message instead of navigation
-            if (confirm('Would you like to restart this lesson or continue exploring?')) {
-                restartLesson();
-            }
+        function playSaAgain() {
+            playReferenceNote();
+            showAchievement('Krishna Smiles Upon You');
         }
         
-        function restartLesson() {
-            // Reset lesson data
-            lessonData = {
-                perfectNotes: 0,
-                longestDuration: 0,
-                breathCompleted: false,
-                rating: 0,
-                completed: false
+        function backToDashboard() {
+            // Save progress
+            const progress = {
+                lesson1: {
+                    completed: true,
+                    stars: 3,
+                    achievements: ['Sacred Beginning', 'First Sa Mastered'],
+                    date: new Date().toISOString()
+                }
             };
+            localStorage.setItem('muraliSevaProgress', JSON.stringify(progress));
             
-            // Reset UI
-            currentPart = 0;
-            document.querySelectorAll('.lesson-part').forEach(part => part.classList.remove('active'));
-            document.getElementById('part-0').classList.add('active');
-            updateProgressDots();
-            
-            // Reset progress displays
-            document.getElementById('perfectNotes').textContent = '0 / 3';
-            document.getElementById('longestDuration').textContent = '0.0s';
-            document.getElementById('breathStatus').textContent = '📊';
+            // In a real app, navigate to dashboard
+            alert('Progress saved! In the full app, this would return to your dashboard.');
+            // window.location.href = 'dashboard.html';
         }
         
-        // Safe localStorage functions
-        function safeLocalStorageGet(key) {
-            try {
-                return localStorage.getItem(key);
-            } catch (e) {
-                console.log('localStorage not available - using session storage');
-                return null;
-            }
+        function practiceMore() {
+            // Reset to practice screen
+            currentScreen = 2;
+            document.getElementById('screen6').classList.remove('active');
+            document.getElementById('screen3').classList.add('active');
+            practiceCount = 0;
+            document.getElementById('continueBtn3').style.display = 'none';
         }
         
-        function safeLocalStorageSet(key, value) {
-            try {
-                localStorage.setItem(key, value);
-            } catch (e) {
-                console.log('localStorage not available - progress saved in memory only');
-                // In production, this would sync to server
-            }
-        }
-        
-        // Initialize lesson
+        // Initialize
         window.addEventListener('load', () => {
-            // Check if user has previous progress
-            const savedProgress = safeLocalStorageGet('lesson1Progress');
-            if (savedProgress) {
-                try {
-                    lessonData = JSON.parse(savedProgress);
-                    updatePartProgress();
-                } catch (e) {
-                    console.log('Could not parse saved progress');
-                }
-            }
-            
-            updateProgressDots();
+            showAchievement('Welcome to MuraliSeva!');
         });
-        
-        // Auto-save progress (safe)
-        setInterval(() => {
-            safeLocalStorageSet('lesson1Progress', JSON.stringify(lessonData));
-        }, 10000);
     </script>
 </body>
 </html>
