@@ -594,39 +594,64 @@
     <div class="modal-overlay" onclick="closeCalibration()"></div>
     <div class="calibration-modal">
         <h2>🎵 Calibrate Your Bansuri</h2>
-        <p>Select your flute type based on your Sa frequency:</p>
+        <p>First, let's check your flute's frequency:</p>
         
-        <div style="margin: 20px 0;">
-            <div class="flute-option" onclick="selectFlute('C', 261, 277)">
-                <strong>C Medium</strong> - Sa at 261-277 Hz<br>
-                <small>Most common for beginners</small>
-            </div>
-            <div class="flute-option" onclick="selectFlute('D', 294, 311)">
-                <strong>D Medium</strong> - Sa at 294-311 Hz
-            </div>
-            <div class="flute-option" onclick="selectFlute('E', 330, 349)">
-                <strong>E Medium</strong> - Sa at 330-349 Hz
-            </div>
-            <div class="flute-option" onclick="selectFlute('F', 349, 370)">
-                <strong>F Medium</strong> - Sa at 349-370 Hz
-            </div>
-            <div class="flute-option" onclick="selectFlute('F#', 370, 392)" style="border: 3px solid #FF8C00;">
-                <strong>F# Medium</strong> - Sa at 370-392 Hz<br>
-                <small style="color: #FF8C00;">← Your flute (375-380 Hz) is likely this</small>
-            </div>
-            <div class="flute-option" onclick="selectFlute('G', 392, 415)">
-                <strong>G Medium</strong> - Sa at 392-415 Hz
-            </div>
-            <div class="flute-option" onclick="selectFlute('A', 440, 466)">
-                <strong>A Medium</strong> - Sa at 440-466 Hz
+        <!-- Frequency Tester Section -->
+        <div style="background: #E3F2FD; padding: 20px; border-radius: 8px; margin: 15px 0;">
+            <h3>Step 1: Test Your Sa Frequency</h3>
+            <p>Close all holes and play Sa to see your frequency</p>
+            
+            <button class="button" id="testFreqBtn" onclick="startFrequencyTest()" style="background: #2196F3;">
+                🎤 Test My Frequency
+            </button>
+            
+            <button class="button secondary" id="stopTestBtn" onclick="stopFrequencyTest()" style="display: none;">
+                Stop Testing
+            </button>
+            
+            <div style="margin-top: 15px; text-align: center;">
+                <div style="font-size: 36px; font-weight: bold; color: #1976D2;" id="freqDisplay">--- Hz</div>
+                <div style="font-size: 18px; color: #666; margin-top: 10px;" id="freqStatus">Click button to start</div>
             </div>
         </div>
         
-        <p style="text-align: center; color: #666; margin-top: 20px;">
-            <small>Based on your 375-380 Hz reading, select <strong>F# Medium</strong></small>
-        </p>
+        <!-- Manual Selection Section -->
+        <div style="margin: 20px 0;">
+            <h3>Step 2: Select Your Flute Type</h3>
+            <p>Based on your frequency reading, choose the matching flute:</p>
+            
+            <button class="button secondary" onclick="selectFlute('C', 261, 277)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px;">
+                <strong>C Medium</strong> - Sa at 261-277 Hz<br>
+                <small>Most common for beginners</small>
+            </button>
+            
+            <button class="button secondary" onclick="selectFlute('D', 294, 311)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px;">
+                <strong>D Medium</strong> - Sa at 294-311 Hz
+            </button>
+            
+            <button class="button secondary" onclick="selectFlute('E', 330, 349)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px;">
+                <strong>E Medium</strong> - Sa at 330-349 Hz
+            </button>
+            
+            <button class="button secondary" onclick="selectFlute('F', 349, 370)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px;">
+                <strong>F Medium</strong> - Sa at 349-370 Hz
+            </button>
+            
+            <button class="button secondary" onclick="selectFlute('F#', 370, 392)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px; border: 2px solid #FF8C00;">
+                <strong>F# Medium</strong> - Sa at 370-392 Hz<br>
+                <small style="color: #FF8C00;">If your reading is 375-380 Hz, choose this</small>
+            </button>
+            
+            <button class="button secondary" onclick="selectFlute('G', 392, 415)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px;">
+                <strong>G Medium</strong> - Sa at 392-415 Hz
+            </button>
+            
+            <button class="button secondary" onclick="selectFlute('A', 440, 466)" style="display: block; width: 100%; margin: 10px 0; text-align: left; padding: 15px;">
+                <strong>A Medium</strong> - Sa at 440-466 Hz
+            </button>
+        </div>
         
-        <button class="button secondary" onclick="closeCalibration()">Cancel</button>
+        <button class="button" onclick="closeCalibration()" style="background: #666;">Cancel</button>
     </div>
     
     <!-- Achievement Popup -->
